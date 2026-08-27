@@ -2,6 +2,14 @@
 
 MaplePath is a public, Canada-first directory of scholarships, internships, and competitions for high-school students in Grades 9–12.
 
+## Site map
+
+- `/` — mission, featured opportunities, and a quick orientation
+- `/opportunities` — the searchable, filterable directory
+- `/opportunities/[id]` — a decision-ready page for each listing
+- `/how-it-works` — how to use the filters and verify a listing
+- `/about` — the project mission and editorial promise
+
 ## Weekly catalog review
 
 1. Search official organization, university, government, and competition pages for new or changed opportunities.
