@@ -18,6 +18,11 @@ export const metadata: Metadata = {
     description: 'A clearer way for Canadian high-school students to find their next opportunity.',
     images: ['/og.png'],
   },
+  icons: {
+    icon: '/favicon.png',
+    shortcut: '/favicon.png',
+    apple: '/favicon.png',
+  },
 };
 
 export default function RootLayout({

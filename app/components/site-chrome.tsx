@@ -1,4 +1,4 @@
-/* eslint-disable @next/next/no-html-link-for-pages */
+/* eslint-disable @next/next/no-html-link-for-pages, @next/next/no-img-element */
 import { catalogUpdatedAt } from '../data/opportunities';
 
 export const displayDate = (value: string) =>
@@ -7,7 +7,7 @@ export const displayDate = (value: string) =>
   );
 
 function BrandMark() {
-  return <span className="brand-mark" aria-hidden="true">✦</span>;
+  return <img className="brand-mark" src="/maplepath-logo.png" width={36} height={36} alt="" />;
 }
 
 export function SiteHeader() {

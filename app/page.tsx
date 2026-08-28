@@ -1,4 +1,4 @@
-/* eslint-disable @next/next/no-html-link-for-pages */
+/* eslint-disable @next/next/no-html-link-for-pages, @next/next/no-img-element */
 import { catalogUpdatedAt, opportunities } from './data/opportunities';
 import { typeMeta } from './components/opportunity-card';
 import { Eyebrow, SiteFooter, SiteHeader, displayDate } from './components/site-chrome';
@@ -26,31 +26,40 @@ function OpportunityTeaser({ opportunity }: { opportunity: (typeof opportunities
 }
 
 export default function Home() {
+  const scholarshipCount = opportunities.filter((opportunity) => opportunity.type === 'Scholarship').length;
+  const competitionCount = opportunities.filter((opportunity) => opportunity.type === 'Competition').length;
+
   return (
     <main>
       <SiteHeader />
 
       <section className="hero home-hero" id="top">
         <div className="hero-copy">
-          <Eyebrow>A clearer way forward</Eyebrow>
-          <h1>Find the next <em>open door.</em></h1>
-          <p className="hero-description">MaplePath brings Canada’s scholarships, internships, and competitions into one calm, useful place — so you can spend less time searching and more time applying.</p>
+          <Eyebrow>Canada’s student opportunity directory</Eyebrow>
+          <h1>Find opportunities<br /><em>worth your time.</em></h1>
+          <p className="hero-description">Search scholarships, internships, and competitions for Canadian high-school students. Start with a broad idea, then use the filters to find a next step that fits.</p>
           <div className="hero-actions">
-            <a className="primary-button" href="/opportunities">Explore the directory <span aria-hidden="true">↘</span></a>
-            <span className="hero-note"><span aria-hidden="true">✦</span> Curated for Grades 9–12</span>
+            <a className="primary-button" href="/opportunities">Search the directory <span aria-hidden="true">↗</span></a>
+            <span className="hero-note"><span className="hero-note-dot" aria-hidden="true" /> Built for Grades 9–12</span>
           </div>
         </div>
         <div className="hero-visual" aria-label="MaplePath catalog snapshot">
-          <div className="hero-orbit orbit-one" />
-          <div className="hero-orbit orbit-two" />
-          <div className="snapshot-card">
-            <div className="snapshot-label">The weekly shortlist</div>
-            <div className="snapshot-number">{opportunities.length}<span>+</span></div>
-            <div className="snapshot-title">real possibilities,<br />one starting point.</div>
-            <div className="snapshot-footer"><span className="status-dot" /> Canada-first · online-friendly</div>
+          <div className="hero-panel">
+            <div className="hero-panel-header">
+              <span className="panel-kicker">MAPLEPATH / DIRECTORY</span>
+              <span className="panel-live"><span className="status-dot" /> Reviewed weekly</span>
+            </div>
+            <div className="hero-panel-brand">
+              <img src="/maplepath-logo.png" width={48} height={48} alt="" />
+              <div><strong>Opportunity search</strong><span>Canada-first · online-friendly</span></div>
+            </div>
+            <div className="hero-panel-stats">
+              <div><strong>{opportunities.length}</strong><span>listings</span></div>
+              <div><strong>{scholarshipCount}</strong><span>scholarships</span></div>
+              <div><strong>{competitionCount}</strong><span>competitions</span></div>
+            </div>
+            <div className="hero-panel-footer"><span>Latest catalog review</span><strong>{displayDate(catalogUpdatedAt)}</strong></div>
           </div>
-          <span className="float-label float-label-top">Scholarships <span>◎</span></span>
-          <span className="float-label float-label-bottom">Build something <span>✦</span></span>
         </div>
       </section>
 
