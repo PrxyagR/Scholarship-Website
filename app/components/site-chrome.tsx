@@ -1,5 +1,6 @@
 /* eslint-disable @next/next/no-html-link-for-pages, @next/next/no-img-element */
 import { catalogUpdatedAt } from '../data/opportunities';
+import { MobileMenu } from './mobile-menu';
 
 export const displayDate = (value: string) =>
   new Intl.DateTimeFormat('en-CA', { month: 'long', day: 'numeric', year: 'numeric' }).format(
@@ -25,6 +26,7 @@ export function SiteHeader() {
       <a className="header-button" href="/opportunities">
         Browse opportunities <span aria-hidden="true">↘</span>
       </a>
+      <MobileMenu />
     </header>
   );
 }
