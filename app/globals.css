@@ -305,6 +305,18 @@ h1 em, h2 em, h3 em {
   color: var(--maple);
 }
 
+.header-button {
+  min-width: 158px;
+  justify-content: space-between;
+  margin-right: 8px;
+  padding-right: 13px;
+  padding-left: 16px;
+}
+
+.header-button span {
+  margin-left: auto;
+}
+
 /* =========================================================
    MOBILE MENU & DRAWER
    ========================================================= */
@@ -2040,6 +2052,16 @@ h1 em, h2 em, h3 em {
    RESPONSIVE MEDIA QUERIES (Mobile First Optimization)
    ========================================================= */
 @media (max-width: 960px) {
+  .desktop-nav,
+  .header-button,
+  .header-auth-link {
+    display: none;
+  }
+
+  .mobile-menu-wrapper {
+    display: block;
+  }
+
   .hero-grid {
     grid-template-columns: 1fr;
     gap: 36px;
@@ -2085,16 +2107,6 @@ h1 em, h2 em, h3 em {
 }
 
 @media (max-width: 768px) {
-  .desktop-nav,
-  .header-button,
-  .header-auth-link {
-    display: none;
-  }
-
-  .mobile-menu-wrapper {
-    display: block;
-  }
-
   .feature-grid,
   .steps-list-grid,
   .principles-2col-grid,
