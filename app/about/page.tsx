@@ -6,46 +6,101 @@ export default function AboutPage() {
   return (
     <>
       <SiteHeader />
-      <main className="inner-page about-page">
-        <section className="inner-hero about-hero">
-          <div className="inner-hero-content">
+      <main className="editorial-page-container">
+        {/* Hero Banner */}
+        <section className="editorial-hero-banner">
+          <div className="editorial-hero-inner">
             <Eyebrow>About MaplePath</Eyebrow>
-            <h1>Opportunity should<br /><em>feel findable.</em></h1>
-            <p>MaplePath is a free, public, student-built directory for Canadian high-school students in Grades 9–12 — a place to begin when the internet feels too scattered and the next step feels too big.</p>
-          </div>
-          <div className="inner-hero-aside about-aside">
-            <span className="inner-hero-stat">{opportunities.length}<small>+</small></span>
-            <span>opportunities in the</span>
-            <span>first curated catalog</span>
+            <h1>Leveling the playing field for Canadian high schoolers.</h1>
+            <p style={{ marginTop: '12px', color: 'var(--ink-soft)', fontSize: '16px', maxWidth: '680px' }}>
+              High school is a critical time to explore passions, build leadership, and prepare for post-secondary education. MaplePath is a free public directory built to ensure every student in Canada has equal access to opportunities.
+            </p>
           </div>
         </section>
 
-        <section className="about-story-section">
-          <div className="about-story-copy">
-            <Eyebrow>Why it exists</Eyebrow>
-            <h2>Good information<br /><em>should travel.</em></h2>
-            <p>Scholarships, internships, and competitions are often spread across university websites, government pages, nonprofit portals, and organizer calendars. That can make finding an opportunity feel like an opportunity in itself.</p>
-            <p>MaplePath gathers a carefully reviewed starting point into one simple directory. It is meant to help more students see what is possible — especially students who do not already know where to look.</p>
-          </div>
-          <div className="about-stat-stack">
-            <div className="about-stat"><strong>01</strong><span>Free to browse</span><p>No account, paywall, or application fee added by MaplePath.</p></div>
-            <div className="about-stat"><strong>02</strong><span>Canada-first</span><p>Local opportunities plus online and worldwide options accessible from Canada.</p></div>
-            <div className="about-stat"><strong>03</strong><span>Source-led</span><p>The official program page is always the final source of truth.</p></div>
+        {/* The Mission Section */}
+        <section className="editorial-content-section">
+          <div className="editorial-story-grid">
+            <div className="editorial-copy">
+              <Eyebrow>The Challenge</Eyebrow>
+              <h2>Why opportunity information is broken</h2>
+              <p>
+                Prestigious scholarships, university math contests, science internships, and leadership summits are often buried deep within departmental websites or passed down informally through select private school clubs.
+              </p>
+              <p>
+                Students who attend smaller community high schools, rural districts, or who are the first in their family to consider higher education frequently miss out simply because they never knew these programs existed.
+              </p>
+              <p>
+                MaplePath solves this by bringing verified scholarships, internships, and competitions into one centralized, public catalog—organized by province, grade, and interest.
+              </p>
+            </div>
+
+            <div className="editorial-stat-card-stack">
+              <div className="editorial-stat-card">
+                <strong>100% Free & Open</strong>
+                <p>No paywalls, account walls, or hidden fees. Anyone can browse the entire directory instantly.</p>
+              </div>
+              <div className="editorial-stat-card">
+                <strong>Canada-Focused</strong>
+                <p>Designed specifically for Canadian high school students in Grades 9 through 12.</p>
+              </div>
+              <div className="editorial-stat-card">
+                <strong>Direct Official Sources</strong>
+                <p>We link directly to official program organizers, universities, and government bodies.</p>
+              </div>
+            </div>
           </div>
         </section>
 
-        <section className="about-promise-section">
-          <div className="promise-heading"><Eyebrow>The editorial promise</Eyebrow><h2>Useful, honest,<br /><em>and growing.</em></h2></div>
-          <div className="promise-grid">
-            <article><span>01</span><h3>Useful enough to act on</h3><p>Each listing includes the details students need to decide whether it is worth opening the official page.</p></article>
-            <article><span>02</span><h3>Honest about its limits</h3><p>“Curated and growing” is a careful starting point, not a promise that every Canadian opportunity is here.</p></article>
-            <article><span>03</span><h3>Maintained by hand</h3><p>The catalog is checked weekly for eligibility, Canada access, dates, and working official links.</p></article>
+        {/* Editorial Standards Section */}
+        <section className="editorial-content-section" style={{ paddingTop: '0' }}>
+          <div className="section-header-row">
+            <div>
+              <Eyebrow>Integrity & Curation</Eyebrow>
+              <h2>Our curation criteria</h2>
+            </div>
+          </div>
+
+          <div className="principles-2col-grid">
+            <div className="principle-box">
+              <div className="principle-box-icon">✓</div>
+              <h3>Verified Legitimacy</h3>
+              <p>
+                Every listing is verified to be hosted by accredited Canadian universities, registered charities, established nonprofits, or government initiatives. We do not accept unverified commercial promotions or lead-generation scams.
+              </p>
+            </div>
+
+            <div className="principle-box">
+              <div className="principle-box-icon">📅</div>
+              <h3>Active Maintenance</h3>
+              <p>
+                We conduct weekly audits to ensure dead links are corrected, expired cycles are archived, and new seasonal opportunities are promptly added to the active index.
+              </p>
+            </div>
           </div>
         </section>
 
-        <section className="about-final-section">
-          <div><Eyebrow>Start where you are</Eyebrow><h2>There is no perfect<br /><em>first step.</em></h2></div>
-          <div><p>Choose a filter that feels helpful, open a listing that catches your attention, and let the official source guide the rest.</p><p className="about-reviewed">Catalog last reviewed {displayDate(catalogUpdatedAt)}</p><a className="primary-button" href="/opportunities">Browse the directory <span aria-hidden="true">↗</span></a></div>
+        {/* Final CTA */}
+        <section className="guide-banner">
+          <div className="guide-banner-card">
+            <div>
+              <Eyebrow>Get Started</Eyebrow>
+              <h2>Find an opportunity worth pursuing</h2>
+              <p>
+                Explore our directory of {opportunities.length}+ vetted opportunities and take the next step in your high school journey.
+              </p>
+              <a className="secondary-button" href="/opportunities">
+                Browse all opportunities <span aria-hidden="true">↗</span>
+              </a>
+            </div>
+
+            <div className="guide-inner-note">
+              <span>Weekly Updates</span>
+              <strong>
+                Catalog last verified on {displayDate(catalogUpdatedAt)}.
+              </strong>
+            </div>
+          </div>
         </section>
       </main>
       <SiteFooter />

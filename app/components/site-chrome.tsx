@@ -8,7 +8,16 @@ export const displayDate = (value: string) =>
   );
 
 function BrandMark() {
-  return <img className="brand-mark" src="/maplepath-logo.png" width={36} height={36} alt="" />;
+  return (
+    <img
+      className="brand-mark"
+      src="/maplepath-logo.png"
+      width={32}
+      height={32}
+      alt="MaplePath logo"
+      loading="eager"
+    />
+  );
 }
 
 export function SiteHeader() {
@@ -19,12 +28,12 @@ export function SiteHeader() {
         <span>MaplePath</span>
       </a>
       <nav className="desktop-nav" aria-label="Primary navigation">
-        <a href="/opportunities">Explore</a>
+        <a href="/opportunities">Explore catalog</a>
         <a href="/how-it-works">How it works</a>
         <a href="/about">About</a>
       </nav>
       <a className="header-button" href="/opportunities">
-        Browse opportunities <span aria-hidden="true">↘</span>
+        Browse catalog <span aria-hidden="true">↗</span>
       </a>
       <MobileMenu />
     </header>
@@ -34,14 +43,22 @@ export function SiteHeader() {
 export function SiteFooter() {
   return (
     <footer className="site-footer">
-      <a className="footer-brand" href="/" aria-label="MaplePath home">
-        <BrandMark />
-        <span>MaplePath</span>
-      </a>
-      <p>A student-built starting point for bigger possibilities.</p>
-      <div className="footer-meta">
-        <span>Catalog last reviewed {displayDate(catalogUpdatedAt)}</span>
-        <a href="/opportunities">Explore ↗</a>
+      <div className="footer-top-row">
+        <a className="footer-brand" href="/" aria-label="MaplePath home">
+          <BrandMark />
+          <span>MaplePath</span>
+        </a>
+        <p className="footer-tagline">
+          Canada’s free student opportunity directory for Grades 9–12.
+        </p>
+      </div>
+      <div className="footer-bottom-row">
+        <span>Catalog verified {displayDate(catalogUpdatedAt)} · Hand-reviewed weekly</span>
+        <div style={{ display: 'flex', gap: '16px' }}>
+          <a href="/opportunities">Directory</a>
+          <a href="/how-it-works">How it works</a>
+          <a href="/about">About</a>
+        </div>
       </div>
     </footer>
   );
@@ -50,7 +67,7 @@ export function SiteFooter() {
 export function Eyebrow({ children }: { children: React.ReactNode }) {
   return (
     <p className="eyebrow">
-      <span className="eyebrow-dot" />
+      <span className="eyebrow-dot" aria-hidden="true" />
       {children}
     </p>
   );

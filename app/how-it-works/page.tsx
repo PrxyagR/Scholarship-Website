@@ -4,19 +4,19 @@ import { Eyebrow, SiteFooter, SiteHeader, displayDate } from '../components/site
 
 const steps = [
   {
-    number: '01',
-    title: 'Choose a direction',
-    body: 'Start with a broad search, or filter by grade, province, city, study focus, type, and Canada access.',
+    number: '01 / DISCOVER',
+    title: 'Filter to your exact fit',
+    body: 'Filter by your current high school grade, province or territory, study interest, and whether you prefer in-person or online opportunities.',
   },
   {
-    number: '02',
-    title: 'Read the fit',
-    body: 'Open any listing to see what it is, who it is for, where it happens, and what to check before applying.',
+    number: '02 / EVALUATE',
+    title: 'Review eligibility & timeline',
+    body: 'Read our concise summaries to check grade restrictions, deadlines, selection criteria, and whether a teacher nomination is required.',
   },
   {
-    number: '03',
-    title: 'Go to the source',
-    body: 'Use the official application link to confirm the latest deadline, requirements, registration steps, and details.',
+    number: '03 / APPLY',
+    title: 'Submit on the official page',
+    body: 'Follow direct links to the university, nonprofit, or government organizer hosting the program to submit your official application.',
   },
 ];
 
@@ -24,58 +24,102 @@ export default function HowItWorksPage() {
   return (
     <>
       <SiteHeader />
-      <main className="inner-page">
-        <section className="inner-hero">
-          <div className="inner-hero-content">
+      <main className="editorial-page-container">
+        {/* Page Header */}
+        <section className="editorial-hero-banner">
+          <div className="editorial-hero-inner">
             <Eyebrow>How MaplePath works</Eyebrow>
-            <h1>Less searching.<br /><em>More starting.</em></h1>
-            <p>MaplePath is a calm first stop for Canadian high-school students looking for a next step. It helps you narrow the field without pretending to make the decision for you.</p>
-          </div>
-          <div className="inner-hero-aside">
-            <span className="inner-hero-stat">{opportunities.length}<small>+</small></span>
-            <span>curated starting points</span>
-            <span>for Grades 9–12</span>
+            <h1>A clear path from search to application.</h1>
+            <p style={{ marginTop: '12px', color: 'var(--ink-soft)', fontSize: '16px', maxWidth: '640px' }}>
+              Finding the right extracurriculars, awards, or summer placements shouldn’t feel like searching through dozens of scattered university and government portals.
+            </p>
           </div>
         </section>
 
-        <section className="guide-section">
-          <div className="section-heading guide-heading">
-            <div><Eyebrow>Your three-step path</Eyebrow><h2>From curious<br /><em>to ready.</em></h2></div>
-            <p className="section-intro">The directory is built to support your judgment, not replace it. Use it to get oriented, then verify every detail at the source.</p>
+        {/* 3 Steps Section */}
+        <section className="editorial-content-section">
+          <div className="section-header-row">
+            <div>
+              <Eyebrow>The process</Eyebrow>
+              <h2>Three simple steps to get started</h2>
+            </div>
           </div>
-          <div className="guide-grid">
+
+          <div className="steps-list-grid">
             {steps.map((step) => (
-              <article className="guide-card" key={step.number}>
-                <span className="guide-number">{step.number}</span>
+              <div className="step-card" key={step.number}>
+                <span className="step-card-num">{step.number}</span>
                 <h3>{step.title}</h3>
                 <p>{step.body}</p>
-              </article>
+              </div>
             ))}
           </div>
         </section>
 
-        <section className="principles-section">
-          <div className="principles-intro"><Eyebrow>What each listing gives you</Eyebrow><h2>A little more<br /><em>clarity.</em></h2></div>
-          <div className="principles-grid">
-            <div className="principle-card"><span className="principle-icon" aria-hidden="true">#</span><h3>Grade range</h3><p>See which grades the opportunity is intended for. Grade filters match when eligibility overlaps your selection.</p></div>
-            <div className="principle-card"><span className="principle-icon" aria-hidden="true">⌖</span><h3>Place and access</h3><p>Find Canada-based, online, and worldwide programs that students in Canada can actually explore.</p></div>
-            <div className="principle-card"><span className="principle-icon" aria-hidden="true">◷</span><h3>Deadline signal</h3><p>Upcoming dates are shown when verified. Rolling and annual programs are labelled without guessing an exact date.</p></div>
-            <div className="principle-card"><span className="principle-icon" aria-hidden="true">↗</span><h3>Official next step</h3><p>Every opportunity includes a direct official link. The organization’s page is always the final source of truth.</p></div>
+        {/* Listing Standards Section */}
+        <section className="editorial-content-section" style={{ paddingTop: '0' }}>
+          <div className="section-header-row">
+            <div>
+              <Eyebrow>Editorial standards</Eyebrow>
+              <h2>What each MaplePath listing gives you</h2>
+            </div>
+          </div>
+
+          <div className="principles-2col-grid">
+            <div className="principle-box">
+              <div className="principle-box-icon">#</div>
+              <h3>Grade Level Precision</h3>
+              <p>
+                Every listing specifies which high school grades (9 through 12) are eligible, preventing wasted time on university-only or elementary programs.
+              </p>
+            </div>
+
+            <div className="principle-box">
+              <div className="principle-box-icon">⌖</div>
+              <h3>Canadian Residency Verification</h3>
+              <p>
+                We only list programs that Canadian students can participate in—whether locally in your province, nationwide, or through global competitions.
+              </p>
+            </div>
+
+            <div className="principle-box">
+              <div className="principle-box-icon">◷</div>
+              <h3>Transparent Deadline Status</h3>
+              <p>
+                We clearly differentiate between exact application deadlines, recurring annual cycles, and rolling admission dates.
+              </p>
+            </div>
+
+            <div className="principle-box">
+              <div className="principle-box-icon">↗</div>
+              <h3>Zero Intermediaries</h3>
+              <p>
+                You never submit applications through MaplePath. Every opportunity directs you directly to the verified official portal.
+              </p>
+            </div>
           </div>
         </section>
 
-        <section className="review-section">
-          <div className="review-card">
-            <span className="guide-card-label">The weekly review</span>
-            <h2>Curated and<br /><em>growing.</em></h2>
-            <p>We search official program, government, university, nonprofit, and organizer pages; verify the fit; update the record; and remove expired dated opportunities from the active catalog.</p>
-            <div className="review-card-meta"><span className="status-dot" /> Last catalog review {displayDate(catalogUpdatedAt)}</div>
-          </div>
-          <div className="review-copy">
-            <Eyebrow>One important reminder</Eyebrow>
-            <h2>Use MaplePath<br /><em>as your first stop.</em></h2>
-            <p>Programs change their rules, dates, locations, and application steps. Before you apply, open the official page and confirm that the opportunity still fits you.</p>
-            <a className="primary-button" href="/opportunities">Explore opportunities <span aria-hidden="true">↗</span></a>
+        {/* Weekly Verification Callout */}
+        <section className="guide-banner">
+          <div className="guide-banner-card">
+            <div>
+              <Eyebrow>Curated & Reviewed</Eyebrow>
+              <h2>Maintained by weekly manual review</h2>
+              <p>
+                Our team regularly audits active links, updates deadline schedules, and removes expired competitions so you can explore with confidence.
+              </p>
+              <a className="secondary-button" href="/opportunities">
+                Explore the catalog ({opportunities.length}+ listings) <span aria-hidden="true">↗</span>
+              </a>
+            </div>
+
+            <div className="guide-inner-note">
+              <span>Catalog Status</span>
+              <strong>
+                Last reviewed on {displayDate(catalogUpdatedAt)}. All links point to original sources.
+              </strong>
+            </div>
           </div>
         </section>
       </main>

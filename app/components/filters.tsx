@@ -1,7 +1,7 @@
 import type { Dispatch, SetStateAction } from 'react';
 import type { LocationMode, OpportunityType, StudyFocus } from '../data/opportunities';
 
-export const typeOptions: OpportunityType[] = ['Internship', 'Competition', 'Scholarship'];
+export const typeOptions: OpportunityType[] = ['Scholarship', 'Competition', 'Internship'];
 export const gradeOptions = [9, 10, 11, 12];
 export const provinceOptions = [
   'National',
@@ -49,14 +49,22 @@ function FilterGroup({
 }) {
   return (
     <fieldset className="filter-group">
-      <legend>{title}</legend>
-      <div className="filter-options">
+      <legend className="filter-group-legend">{title}</legend>
+      <div className="filter-chips-list">
         {options.map((option) => {
           const key = String(option);
           const isSelected = selected.includes(option);
           return (
-            <label className={`filter-chip ${isSelected ? 'is-selected' : ''}`} key={key}>
-              <input type="checkbox" checked={isSelected} onChange={() => onToggle(option)} />
+            <label
+              className={`filter-chip-label ${isSelected ? 'is-selected' : ''}`}
+              key={key}
+            >
+              <input
+                type="checkbox"
+                checked={isSelected}
+                onChange={() => onToggle(option)}
+                aria-label={`${title}: ${optionLabel ? optionLabel(option) : key}`}
+              />
               <span>{optionLabel ? optionLabel(option) : key}</span>
             </label>
           );
@@ -80,6 +88,7 @@ export function FilterPanel({
   onReset,
   onClose,
   mobile = false,
+  totalCount,
 }: {
   selectedTypes: OpportunityType[];
   setSelectedTypes: Dispatch<SetStateAction<OpportunityType[]>>;
@@ -94,26 +103,96 @@ export function FilterPanel({
   onReset: () => void;
   onClose?: () => void;
   mobile?: boolean;
+  totalCount?: number;
 }) {
   const toggle = <T,>(value: T, setter: Dispatch<SetStateAction<T[]>>) => {
-    setter((current) => (current.includes(value) ? current.filter((item) => item !== value) : [...current, value]));
+    setter((current) =>
+      current.includes(value) ? current.filter((item) => item !== value) : [...current, value],
+    );
   };
 
+  const hasFilters =
+    selectedTypes.length > 0 ||
+    selectedProvinces.length > 0 ||
+    selectedGrades.length > 0 ||
+    selectedFocuses.length > 0 ||
+    selectedLocations.length > 0;
+
   return (
-    <div className={`filter-card ${mobile ? 'filter-card-mobile' : ''}`}>
-      <div className="filter-card-header">
-        <div><span className="eyebrow-small">Refine</span><h2>Find your fit</h2></div>
-        <div className="filter-card-actions">
-          <button className="text-button" type="button" onClick={onReset}>Reset</button>
-          {onClose && <button className="close-button" type="button" onClick={onClose} aria-label="Close filters">×</button>}
+    <div className={`filters-panel-content ${mobile ? 'is-mobile' : ''}`}>
+      <div className="filters-header">
+        <h2 className="filters-title">Filter by</h2>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          {hasFilters && (
+            <button className="reset-button" type="button" onClick={onReset}>
+              Reset all
+            </button>
+          )}
+          {mobile && onClose && (
+            <button
+              className="close-sheet-btn"
+              type="button"
+              onClick={onClose}
+              aria-label="Close filter drawer"
+            >
+              ✕
+            </button>
+          )}
         </div>
       </div>
-      <FilterGroup title="Opportunity type" options={typeOptions} selected={selectedTypes} onToggle={(value) => toggle(value as OpportunityType, setSelectedTypes)} />
-      <FilterGroup title="Grade" options={gradeOptions} selected={selectedGrades} onToggle={(value) => toggle(value as number, setSelectedGrades)} optionLabel={(value) => `Grade ${value}`} />
-      <FilterGroup title="Study focus" options={focusOptions} selected={selectedFocuses} onToggle={(value) => toggle(value as StudyFocus, setSelectedFocuses)} />
-      <FilterGroup title="Access" options={accessOptions} selected={selectedLocations} onToggle={(value) => toggle(value as LocationMode, setSelectedLocations)} optionLabel={(value) => value === 'Canada' ? 'Canada-based' : value === 'Online' ? 'Online' : 'Worldwide · Canada eligible'} />
-      <FilterGroup title="Province or territory" options={provinceOptions} selected={selectedProvinces} onToggle={(value) => toggle(value as string, setSelectedProvinces)} />
-      {mobile && <button className="mobile-filter-done" type="button" onClick={onClose}>Show matching opportunities <span aria-hidden="true">↗</span></button>}
+
+      <FilterGroup
+        title="Opportunity type"
+        options={typeOptions}
+        selected={selectedTypes}
+        onToggle={(value) => toggle(value as OpportunityType, setSelectedTypes)}
+      />
+
+      <FilterGroup
+        title="Grade level"
+        options={gradeOptions}
+        selected={selectedGrades}
+        onToggle={(value) => toggle(value as number, setSelectedGrades)}
+        optionLabel={(value) => `Grade ${value}`}
+      />
+
+      <FilterGroup
+        title="Study focus"
+        options={focusOptions}
+        selected={selectedFocuses}
+        onToggle={(value) => toggle(value as StudyFocus, setSelectedFocuses)}
+      />
+
+      <FilterGroup
+        title="Access & location"
+        options={accessOptions}
+        selected={selectedLocations}
+        onToggle={(value) => toggle(value as LocationMode, setSelectedLocations)}
+        optionLabel={(value) =>
+          value === 'Canada'
+            ? 'Canada-based'
+            : value === 'Online'
+            ? 'Online only'
+            : 'Worldwide (Canada eligible)'
+        }
+      />
+
+      <FilterGroup
+        title="Province or territory"
+        options={provinceOptions}
+        selected={selectedProvinces}
+        onToggle={(value) => toggle(value as string, setSelectedProvinces)}
+      />
+
+      {mobile && (
+        <div style={{ marginTop: '24px' }}>
+          <button className="mobile-filter-done-btn" type="button" onClick={onClose}>
+            {totalCount !== undefined
+              ? `Show ${totalCount} ${totalCount === 1 ? 'Opportunity' : 'Opportunities'} →`
+              : 'Apply filters'}
+          </button>
+        </div>
+      )}
     </div>
   );
 }

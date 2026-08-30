@@ -1,55 +1,90 @@
 import type { Opportunity, OpportunityType } from '../data/opportunities';
 import { displayDate } from './site-chrome';
 
-export const typeMeta: Record<OpportunityType, { label: string; accent: string; icon: string }> = {
-  Internship: { label: 'Internship', accent: 'coral', icon: '↗' },
-  Competition: { label: 'Competition', accent: 'blue', icon: '✦' },
-  Scholarship: { label: 'Scholarship', accent: 'gold', icon: '◎' },
+export const typeMeta: Record<
+  OpportunityType,
+  { label: string; badgeClass: string; icon: string }
+> = {
+  Scholarship: { label: 'Scholarship', badgeClass: 'badge-scholarship', icon: '◎' },
+  Competition: { label: 'Competition', badgeClass: 'badge-competition', icon: '✦' },
+  Internship: { label: 'Internship', badgeClass: 'badge-internship', icon: '↗' },
 };
 
 export function OpportunityCard({ opportunity }: { opportunity: Opportunity }) {
   const meta = typeMeta[opportunity.type];
 
   return (
-    <article className={`opportunity-card accent-${meta.accent}`}>
-      <div className="card-topline">
-        <span className="type-badge">
+    <article className="opportunity-card-item">
+      <div className="card-top-row">
+        <span className={`card-type-badge ${meta.badgeClass}`}>
           <span aria-hidden="true">{meta.icon}</span>
           {meta.label}
         </span>
-        {opportunity.featured && <span className="featured-label">Worth a look</span>}
+        {opportunity.featured && (
+          <span className="card-featured-pill">Featured</span>
+        )}
       </div>
-      <a className="card-title-link" href={`/opportunities/${opportunity.id}`}>
-        <h3>{opportunity.title}</h3>
-      </a>
-      <p className="card-provider">{opportunity.provider}</p>
-      <div className="card-details">
-        <span><span aria-hidden="true">⌖</span> {opportunity.locationLabel}</span>
-        <span><span aria-hidden="true">#</span> Grades {opportunity.grades.join(' · ')}</span>
-        <span><span aria-hidden="true">◷</span> {opportunity.deadline.label}</span>
+
+      <div className="card-title-heading">
+        <h3>
+          <a href={`/opportunities/${opportunity.id}`}>{opportunity.title}</a>
+        </h3>
       </div>
-      <p className="card-summary">{opportunity.summary}</p>
-      <p className="eligibility-note"><span aria-hidden="true">✓</span> {opportunity.eligibility}</p>
-      <div className="card-bottom">
-        <div className="tag-row" aria-label="Study focus">
-          {opportunity.studyFocus.slice(0, 3).map((focus) => <span className="topic-tag" key={focus}>{focus}</span>)}
+      <p className="card-provider-text">{opportunity.provider}</p>
+
+      <div className="card-meta-list">
+        <div className="card-meta-item">
+          <span className="card-meta-icon" aria-hidden="true">
+            ⌖
+          </span>
+          <span>{opportunity.locationLabel}</span>
         </div>
-        <div className="card-links">
-          <a className="details-link" href={`/opportunities/${opportunity.id}`}>
-            View details <span aria-hidden="true">→</span>
-          </a>
-          <a
-            className="apply-link"
-            href={opportunity.applyUrl}
-            target="_blank"
-            rel="noreferrer"
-            aria-label={`Open official application page for ${opportunity.title}`}
-          >
-            Official page <span aria-hidden="true">↗</span>
-          </a>
+        <div className="card-meta-item">
+          <span className="card-meta-icon" aria-hidden="true">
+            #
+          </span>
+          <span>Grades {opportunity.grades.join(' · ')}</span>
+        </div>
+        <div className="card-meta-item">
+          <span className="card-meta-icon" aria-hidden="true">
+            ◷
+          </span>
+          <span>{opportunity.deadline.label}</span>
         </div>
       </div>
-      <p className="verified-line">Checked {displayDate(opportunity.lastVerified)}</p>
+
+      <p className="card-summary-text">{opportunity.summary}</p>
+
+      <div className="card-eligibility-box">
+        <strong>Eligibility:</strong> {opportunity.eligibility}
+      </div>
+
+      <div className="card-tags-row" aria-label="Study fields">
+        {opportunity.studyFocus.slice(0, 3).map((focus) => (
+          <span className="card-focus-tag" key={focus}>
+            {focus}
+          </span>
+        ))}
+      </div>
+
+      <div className="card-footer-actions">
+        <a className="card-details-btn" href={`/opportunities/${opportunity.id}`}>
+          View details <span aria-hidden="true">→</span>
+        </a>
+        <a
+          className="card-apply-btn"
+          href={opportunity.applyUrl}
+          target="_blank"
+          rel="noreferrer"
+          aria-label={`Open official application page for ${opportunity.title}`}
+        >
+          Official page <span aria-hidden="true">↗</span>
+        </a>
+      </div>
+
+      <p className="card-verified-line">
+        Verified {displayDate(opportunity.lastVerified)}
+      </p>
     </article>
   );
 }

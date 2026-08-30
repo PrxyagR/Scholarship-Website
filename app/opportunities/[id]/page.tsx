@@ -54,76 +54,135 @@ export default async function OpportunityDetailPage({ params }: OpportunityPageP
   return (
     <>
       <SiteHeader />
-      <main className={`detail-page accent-${meta.accent}`}>
-        <section className="detail-hero">
-          <a className="detail-back" href="/opportunities">← Back to all opportunities</a>
-          <div className="detail-layout">
-            <div className="detail-main">
-              <div className="detail-topline">
-                <span className="type-badge"><span aria-hidden="true">{meta.icon}</span>{meta.label}</span>
-                {opportunity.featured && <span className="featured-label">Worth a look</span>}
-              </div>
-              <h1>{opportunity.title}</h1>
-              <p className="detail-provider">{opportunity.provider}</p>
-              <p className="detail-summary">{opportunity.summary}</p>
+      <main className="detail-page-container">
+        {/* Back Link */}
+        <a className="detail-back-link" href="/opportunities">
+          <span aria-hidden="true">←</span> Back to all opportunities
+        </a>
 
-              <div className="detail-meta-grid">
-                <div className="detail-meta">
-                  <span className="detail-meta-label">Where</span>
-                  <strong>{opportunity.locationLabel}</strong>
-                  <span>{opportunity.city} · {opportunity.province}</span>
-                </div>
-                <div className="detail-meta">
-                  <span className="detail-meta-label">Who it’s for</span>
-                  <strong>Grades {opportunity.grades.join(' · ')}</strong>
-                  <span>Canadian high-school students</span>
-                </div>
-                <div className="detail-meta">
-                  <span className="detail-meta-label">Deadline</span>
-                  <strong>{opportunity.deadline.label}</strong>
-                  <span>{opportunity.deadline.kind === 'rolling' ? 'Rolling opportunity' : 'Check the official page for current dates'}</span>
-                </div>
-              </div>
+        <div className="detail-layout-grid">
+          {/* Main Content */}
+          <div className="detail-main-content">
+            <div className="card-top-row" style={{ justifyContent: 'flex-start', gap: '8px' }}>
+              <span className={`card-type-badge ${meta.badgeClass}`}>
+                <span aria-hidden="true">{meta.icon}</span>
+                {meta.label}
+              </span>
+              {opportunity.featured && (
+                <span className="card-featured-pill">Featured</span>
+              )}
+            </div>
 
-              <div className="detail-section-block">
-                <Eyebrow>Eligibility notes</Eyebrow>
-                <p className="detail-eligibility">{opportunity.eligibility}</p>
-              </div>
+            <h1>{opportunity.title}</h1>
+            <p className="detail-provider-heading">{opportunity.provider}</p>
 
-              <div className="detail-section-block">
-                <Eyebrow>Study focus</Eyebrow>
-                <div className="detail-focuses">
-                  {opportunity.studyFocus.map((focus) => <span className="topic-tag" key={focus}>{focus}</span>)}
-                </div>
-              </div>
+            <p className="detail-lead-summary">{opportunity.summary}</p>
 
-              <div className="detail-actions">
-                <a className="primary-button" href={opportunity.applyUrl} target="_blank" rel="noreferrer">
-                  Open official application <span aria-hidden="true">↗</span>
-                </a>
-                <p>MaplePath is a guide. Confirm the current rules, dates, and application steps on the official page.</p>
+            {/* Metadata 3-Box Row */}
+            <div className="detail-meta-cards-row">
+              <div className="detail-meta-col">
+                <span className="detail-meta-label">Location / Access</span>
+                <span className="detail-meta-value">{opportunity.locationLabel}</span>
+                <span className="detail-meta-hint">
+                  {opportunity.city} · {opportunity.province}
+                </span>
+              </div>
+              <div className="detail-meta-col">
+                <span className="detail-meta-label">Grade Eligibility</span>
+                <span className="detail-meta-value">Grades {opportunity.grades.join(' · ')}</span>
+                <span className="detail-meta-hint">Canadian high school students</span>
+              </div>
+              <div className="detail-meta-col">
+                <span className="detail-meta-label">Application Timeline</span>
+                <span className="detail-meta-value">{opportunity.deadline.label}</span>
+                <span className="detail-meta-hint">
+                  {opportunity.deadline.kind === 'rolling'
+                    ? 'Rolling review cycle'
+                    : 'Check official page for exact cutoff'}
+                </span>
               </div>
             </div>
 
-            <aside className="detail-sidebar">
-              <div className="detail-sidebar-card">
-                <span className="sidebar-card-label">MaplePath check</span>
-                <div className="sidebar-check"><span aria-hidden="true">✓</span><strong>Official source</strong><span>Application link goes directly to the organization running this opportunity.</span></div>
-                <div className="sidebar-check"><span aria-hidden="true">✓</span><strong>Canada accessible</strong><span>{opportunity.locationLabel}</span></div>
-                <div className="sidebar-check"><span aria-hidden="true">✓</span><strong>Recently reviewed</strong><span>{displayDate(opportunity.lastVerified)}</span></div>
-              </div>
-              <div className="detail-sidebar-card detail-sidebar-note">
-                <span className="sidebar-card-label">Next move</span>
-                <p>Open the official page, save the deadline somewhere you will see it, and check whether your school or a teacher needs to register you.</p>
-              </div>
-            </aside>
-          </div>
-        </section>
+            {/* Eligibility Section */}
+            <div className="detail-section-block">
+              <Eyebrow>Eligibility & Requirements</Eyebrow>
+              <p className="detail-eligibility-text">{opportunity.eligibility}</p>
+            </div>
 
-        <section className="detail-footer-cta">
-          <div><Eyebrow>Keep exploring</Eyebrow><h2>There’s more than<br /><em>one open door.</em></h2></div>
-          <a className="secondary-button" href="/opportunities">Browse the full directory <span aria-hidden="true">↗</span></a>
-        </section>
+            {/* Study Focus Section */}
+            <div className="detail-section-block">
+              <Eyebrow>Field of Study</Eyebrow>
+              <div className="card-tags-row" style={{ marginTop: '8px' }}>
+                {opportunity.studyFocus.map((focus) => (
+                  <span className="card-focus-tag" key={focus}>
+                    {focus}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* Apply Action Box */}
+            <div className="detail-apply-box">
+              <a
+                className="primary-button"
+                href={opportunity.applyUrl}
+                target="_blank"
+                rel="noreferrer"
+                aria-label={`Open official application page for ${opportunity.title}`}
+              >
+                Open official program page <span aria-hidden="true">↗</span>
+              </a>
+              <p className="detail-apply-disclaimer">
+                MaplePath directs you to the official source. Always confirm current rules, deadlines, and registration instructions directly on the host website.
+              </p>
+            </div>
+          </div>
+
+          {/* Sidebar */}
+          <aside className="detail-sidebar-wrap">
+            <div className="detail-sidebar-card">
+              <span className="eyebrow" style={{ marginBottom: '8px' }}>
+                Verification checks
+              </span>
+              <div className="sidebar-check-item">
+                <span className="sidebar-check-icon" aria-hidden="true">
+                  ✓
+                </span>
+                <div>
+                  <strong>Direct Official Link</strong>
+                  <span>Links to verified organizer portal</span>
+                </div>
+              </div>
+              <div className="sidebar-check-item">
+                <span className="sidebar-check-icon" aria-hidden="true">
+                  ✓
+                </span>
+                <div>
+                  <strong>Canada Accessible</strong>
+                  <span>{opportunity.locationLabel}</span>
+                </div>
+              </div>
+              <div className="sidebar-check-item">
+                <span className="sidebar-check-icon" aria-hidden="true">
+                  ✓
+                </span>
+                <div>
+                  <strong>Recently Reviewed</strong>
+                  <span>Verified {displayDate(opportunity.lastVerified)}</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="detail-sidebar-card" style={{ background: 'var(--paper-subtle)' }}>
+              <span className="eyebrow" style={{ marginBottom: '8px' }}>
+                Helpful Tips
+              </span>
+              <p style={{ fontSize: '13px', color: 'var(--ink-soft)', lineHeight: 1.55 }}>
+                Bookmark the official link and calendar the deadline early. If a school nomination or teacher reference is required, reach out to your counselor at least 3 weeks before the cutoff date.
+              </p>
+            </div>
+          </aside>
+        </div>
       </main>
       <SiteFooter />
     </>
