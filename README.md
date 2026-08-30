@@ -9,7 +9,7 @@ MaplePath is a public, Canada-first directory of scholarships, internships, and 
 - `/opportunities/[id]` — a decision-ready page for each listing
 - `/how-it-works` — how to use the filters and verify a listing
 - `/about` — the project mission and editorial promise
-- `/sign-in` — email/password sign-in
+- `/sign-in` — email/password or Google sign-in
 - `/sign-up` — account creation with email confirmation
 - `/account` — signed-in account page
 - `/dashboard` — signed-in student profile, recommendations, deadline export, and application tracker
