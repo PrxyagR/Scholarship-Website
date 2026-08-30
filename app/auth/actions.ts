@@ -49,6 +49,33 @@ export async function signIn(formData: FormData) {
   redirect(next);
 }
 
+export async function signInWithGoogle(formData: FormData) {
+  const consent = readString(formData, 'google_consent');
+  const next = getNext(formData);
+
+  if (consent !== 'on') {
+    redirect(`/sign-in?error=consent&next=${encodeURIComponent(next)}`);
+  }
+
+  const supabase = await createClient();
+  if (!supabase) {
+    redirect(`/sign-in?error=setup&next=${encodeURIComponent(next)}`);
+  }
+
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: 'google',
+    options: {
+      redirectTo: `${getSiteUrl()}/auth/callback?provider=google&next=${encodeURIComponent(next)}`,
+    },
+  });
+
+  if (error || !data.url) {
+    redirect(`/sign-in?error=google&next=${encodeURIComponent(next)}`);
+  }
+
+  redirect(data.url);
+}
+
 export async function signUp(formData: FormData) {
   const email = readEmail(formData);
   const password = readString(formData, 'password');

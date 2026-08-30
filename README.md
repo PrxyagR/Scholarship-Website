@@ -34,6 +34,10 @@ MaplePath uses Supabase Auth for real email/password accounts. The directory rem
 
 The owner can sign in with the configured admin email and open `/admin/signups`. “Registered accounts” is the count of unique Supabase Auth users; “Email-confirmed accounts” is the safer number to describe as verified registrations. Neither number is a page-view or unique-visitor metric.
 
+### Google sign-in setup
+
+The sign-in and sign-up pages include a Google button. To activate it, create a Google OAuth client with the Web application type, add the deployed MaplePath origin as an authorized JavaScript origin, and add the Supabase Auth callback (`https://<your-project-ref>.supabase.co/auth/v1/callback`) as an authorized redirect URI. Then enable Google under Supabase Dashboard → Authentication → Providers and paste the Google client ID and secret. In Supabase URL Configuration, allow the MaplePath callback (`https://maplepath-opportunities.prayagrakholia7.chatgpt.site/auth/callback`) and the local callback used during development. The button preserves the student’s return path to the dashboard or saved list.
+
 ## Saved opportunities
 
 Signed-in users can save opportunities from the home highlights, directory cards, and detail pages. Their saved opportunity IDs are stored in their Supabase account metadata and shown at `/saved`. Signed-out visitors are sent to `/sign-in` and returned to the page they were viewing after authentication.

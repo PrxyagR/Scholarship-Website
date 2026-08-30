@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { signUp } from '../auth/actions';
+import { signInWithGoogle, signUp } from '../auth/actions';
 import { AuthError, AuthField, AuthShell, AuthSuccess } from '../components/auth-shell';
 import { getSafeNextPath } from '@/lib/supabase/redirects';
 
@@ -42,6 +42,22 @@ export default async function SignUpPage({ searchParams }: { searchParams: Searc
           Your account is almost ready. Check your inbox and click the confirmation link before signing in.
       </AuthSuccess>
       ) : null}
+      <form className="auth-form" action={signInWithGoogle}>
+        <input type="hidden" name="next" value={next} />
+        <label className="auth-checkbox">
+          <input name="google_consent" type="checkbox" required />
+          <span>
+            I agree to the <Link href="/privacy">privacy notice</Link> and understand that Google will provide my basic account details to MaplePath.
+          </span>
+        </label>
+        <button className="google-submit" type="submit">
+          <span className="google-glyph" aria-hidden="true">G</span>
+          Continue with Google
+        </button>
+      </form>
+      <div className="auth-divider" aria-hidden="true">
+        <span>or create with email</span>
+      </div>
       <form className="auth-form" action={signUp}>
         <input type="hidden" name="next" value={next} />
         <AuthField id="email" label="Email address" type="email" autoComplete="email" />
