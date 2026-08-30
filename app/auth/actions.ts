@@ -54,29 +54,30 @@ export async function signUp(formData: FormData) {
   const password = readString(formData, 'password');
   const passwordConfirmation = readString(formData, 'password_confirmation');
   const consent = readString(formData, 'privacy_consent');
+  const next = getNext(formData);
 
   if (!isValidEmail(email)) {
-    redirect('/sign-up?error=invalid-email');
+    redirect(`/sign-up?error=invalid-email&next=${encodeURIComponent(next)}`);
   }
 
   if (password.length < MIN_PASSWORD_LENGTH || password !== passwordConfirmation) {
-    redirect('/sign-up?error=password');
+    redirect(`/sign-up?error=password&next=${encodeURIComponent(next)}`);
   }
 
   if (consent !== 'on') {
-    redirect('/sign-up?error=consent');
+    redirect(`/sign-up?error=consent&next=${encodeURIComponent(next)}`);
   }
 
   const supabase = await createClient();
   if (!supabase) {
-    redirect('/sign-up?error=setup');
+    redirect(`/sign-up?error=setup&next=${encodeURIComponent(next)}`);
   }
 
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
-      emailRedirectTo: `${getSiteUrl()}/auth/confirm?next=/account`,
+      emailRedirectTo: `${getSiteUrl()}/auth/confirm?next=${encodeURIComponent(next)}`,
       data: {
         maplepath_consent: true,
         consent_version: CONSENT_VERSION,
@@ -91,10 +92,10 @@ export async function signUp(formData: FormData) {
   revalidatePath('/', 'layout');
 
   if (data.session) {
-    redirect('/account');
+    redirect(next);
   }
 
-  redirect('/sign-up?message=check-email');
+  redirect(`/sign-up?message=check-email&next=${encodeURIComponent(next)}`);
 }
 
 export async function requestPasswordReset(formData: FormData) {

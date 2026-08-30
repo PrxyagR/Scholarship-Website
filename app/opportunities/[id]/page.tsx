@@ -3,7 +3,11 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { opportunities } from '../../data/opportunities';
 import { typeMeta } from '../../components/opportunity-card';
+import { SaveOpportunityButton } from '../../components/save-opportunity-button';
 import { Eyebrow, SiteFooter, SiteHeader, displayDate } from '../../components/site-chrome';
+import { getSavedOpportunityState } from '@/lib/saved-opportunities';
+
+export const dynamic = 'force-dynamic';
 
 type OpportunityPageProps = {
   params: Promise<{ id: string }>;
@@ -50,6 +54,7 @@ export default async function OpportunityDetailPage({ params }: OpportunityPageP
   if (!opportunity) notFound();
 
   const meta = typeMeta[opportunity.type];
+  const { user, savedIds } = await getSavedOpportunityState();
 
   return (
     <>
@@ -71,6 +76,15 @@ export default async function OpportunityDetailPage({ params }: OpportunityPageP
               {opportunity.featured && (
                 <span className="card-featured-pill">Featured</span>
               )}
+              <div className="card-top-actions">
+                <SaveOpportunityButton
+                  opportunityId={opportunity.id}
+                  opportunityTitle={opportunity.title}
+                  initialSaved={savedIds.includes(opportunity.id)}
+                  isAuthenticated={Boolean(user)}
+                  returnTo={`/opportunities/${opportunity.id}`}
+                />
+              </div>
             </div>
 
             <h1>{opportunity.title}</h1>

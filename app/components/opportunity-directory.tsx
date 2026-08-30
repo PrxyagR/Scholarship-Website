@@ -12,7 +12,13 @@ import { FilterPanel } from './filters';
 import { OpportunityCard } from './opportunity-card';
 import { displayDate, Eyebrow } from './site-chrome';
 
-export default function OpportunityDirectory() {
+export default function OpportunityDirectory({
+  initialSavedIds = [],
+  isAuthenticated = false,
+}: {
+  initialSavedIds?: string[];
+  isAuthenticated?: boolean;
+}) {
   const [query, setQuery] = useState('');
   const [selectedTypes, setSelectedTypes] = useState<OpportunityType[]>([]);
   const [selectedProvinces, setSelectedProvinces] = useState<string[]>([]);
@@ -371,7 +377,13 @@ export default function OpportunityDirectory() {
             {filteredOpportunities.length > 0 ? (
               <div className="opportunities-grid">
                 {filteredOpportunities.map((opportunity) => (
-                  <OpportunityCard key={opportunity.id} opportunity={opportunity} />
+                  <OpportunityCard
+                    key={opportunity.id}
+                    opportunity={opportunity}
+                    initialSaved={initialSavedIds.includes(opportunity.id)}
+                    isAuthenticated={isAuthenticated}
+                    returnTo="/opportunities"
+                  />
                 ))}
               </div>
             ) : (

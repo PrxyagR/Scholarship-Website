@@ -12,6 +12,9 @@ export default function PrivacyPage() {
         <p>
           When you create an account, MaplePath stores your email address, account creation time, and the authentication records needed to sign you in securely. We do not ask for your school, grade, home address, date of birth, or application materials.
         </p>
+        <p>
+          If you use the Save feature, MaplePath stores the IDs of the opportunities you chose so your shortlist can appear when you return. The saved list does not include application answers or information submitted to opportunity providers.
+        </p>
         <h2>Why we collect it</h2>
         <p>
           Your email lets Supabase Authentication create and protect your account. The MaplePath app only exposes aggregate signup totals to the project owner; Supabase project administrators can manage the underlying authentication records. The totals let MaplePath’s reach be reported honestly.

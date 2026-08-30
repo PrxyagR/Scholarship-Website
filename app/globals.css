@@ -1228,6 +1228,68 @@ h1 em, h2 em, h3 em {
   align-items: center;
   justify-content: space-between;
   gap: 10px;
+  flex-wrap: wrap;
+}
+
+.card-top-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.save-opportunity-control {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+}
+
+.save-opportunity-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-height: 36px;
+  padding: 6px 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--ink-soft);
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  transition: border-color 140ms ease, background 140ms ease, color 140ms ease;
+}
+
+.save-opportunity-button:hover {
+  border-color: var(--maple);
+  background: var(--maple-light);
+  color: var(--maple-hover);
+}
+
+.save-opportunity-button.is-saved {
+  border-color: var(--maple-border);
+  background: var(--maple-light);
+  color: var(--maple-hover);
+}
+
+.save-opportunity-button:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.save-opportunity-icon {
+  color: var(--maple);
+  font-size: 16px;
+  line-height: 1;
+}
+
+.save-opportunity-error {
+  color: var(--maple-hover);
+  font-size: 10px;
+  line-height: 1;
 }
 
 .card-type-badge {
@@ -1411,6 +1473,78 @@ h1 em, h2 em, h3 em {
   margin-top: 10px;
   font-size: 11px;
   color: var(--ink-muted);
+}
+
+/* =========================================================
+   SAVED OPPORTUNITIES
+   ========================================================= */
+.saved-page-wrapper {
+  max-width: var(--max);
+  margin: 0 auto;
+}
+
+.saved-page-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 32px;
+  padding: 62px 20px 52px;
+  border-bottom: 1px solid var(--line);
+}
+
+.saved-page-header > div {
+  max-width: 700px;
+}
+
+.saved-page-header p {
+  max-width: 600px;
+  margin-top: 12px;
+  color: var(--ink-soft);
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.saved-page-count {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 7px;
+  flex-shrink: 0;
+  color: var(--forest);
+  font-size: 42px;
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  line-height: 1;
+}
+
+.saved-page-count small {
+  color: var(--ink-muted);
+  font-size: 12px;
+  font-weight: 750;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.saved-page-content {
+  padding: 48px 20px 96px;
+}
+
+.saved-page-section-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.saved-empty-state {
+  padding: 72px 20px;
+}
+
+.saved-empty-icon {
+  margin-bottom: 12px;
+  color: var(--maple);
+  font-size: 42px;
+  line-height: 1;
 }
 
 /* Empty State */
@@ -2459,5 +2593,44 @@ h1 em, h2 em, h3 em {
 
   .metrics-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .saved-page-header {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 48px 20px 38px;
+  }
+
+  .saved-page-count {
+    font-size: 34px;
+  }
+
+  .saved-page-content {
+    padding: 38px 20px 72px;
+  }
+
+  .saved-page-section-heading {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .saved-page-section-heading .secondary-button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 420px) {
+  .saved-page-header,
+  .saved-page-content {
+    padding-right: 14px;
+    padding-left: 14px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .save-opportunity-button {
+    transition: none;
   }
 }

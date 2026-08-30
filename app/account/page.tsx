@@ -74,6 +74,9 @@ export default async function AccountPage({ searchParams }: { searchParams: Sear
         <Link className="primary-button" href="/opportunities">
           Explore opportunities <span aria-hidden="true">↗</span>
         </Link>
+        <Link className="secondary-button" href="/saved">
+          View saved opportunities
+        </Link>
         <Link className="secondary-button" href="/forgot-password">
           Change password
         </Link>

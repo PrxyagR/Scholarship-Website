@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { signUp } from '../auth/actions';
 import { AuthError, AuthField, AuthShell, AuthSuccess } from '../components/auth-shell';
+import { getSafeNextPath } from '@/lib/supabase/redirects';
 
 type SearchParams = Promise<Record<string, string | string[] | undefined>>;
 
@@ -27,6 +28,7 @@ export default async function SignUpPage({ searchParams }: { searchParams: Searc
   const query = await searchParams;
   const error = errorMessage(firstValue(query.error));
   const checkEmail = firstValue(query.message) === 'check-email';
+  const next = getSafeNextPath(firstValue(query.next), '/account');
 
   return (
     <AuthShell
@@ -38,9 +40,10 @@ export default async function SignUpPage({ searchParams }: { searchParams: Searc
       {checkEmail ? (
         <AuthSuccess>
           Your account is almost ready. Check your inbox and click the confirmation link before signing in.
-        </AuthSuccess>
+      </AuthSuccess>
       ) : null}
       <form className="auth-form" action={signUp}>
+        <input type="hidden" name="next" value={next} />
         <AuthField id="email" label="Email address" type="email" autoComplete="email" />
         <AuthField
           id="password"
@@ -68,7 +71,8 @@ export default async function SignUpPage({ searchParams }: { searchParams: Searc
       </form>
       <div className="auth-links">
         <span>
-          Already have an account? <Link href="/sign-in">Sign in</Link>
+          Already have an account?{' '}
+          <Link href={`/sign-in?next=${encodeURIComponent(next)}`}>Sign in</Link>
         </span>
       </div>
     </AuthShell>

@@ -1,13 +1,25 @@
 /* eslint-disable @next/next/no-html-link-for-pages */
 import { catalogUpdatedAt, opportunities } from './data/opportunities';
 import { typeMeta } from './components/opportunity-card';
+import { SaveOpportunityButton } from './components/save-opportunity-button';
 import { Eyebrow, SiteFooter, SiteHeader, displayDate } from './components/site-chrome';
+import { getSavedOpportunityState } from '@/lib/saved-opportunities';
+
+export const dynamic = 'force-dynamic';
 
 const featuredOpportunities = opportunities
   .filter((opportunity) => opportunity.featured)
   .slice(0, 4);
 
-function OpportunityTeaser({ opportunity }: { opportunity: (typeof opportunities)[number] }) {
+function OpportunityTeaser({
+  opportunity,
+  initialSaved,
+  isAuthenticated,
+}: {
+  opportunity: (typeof opportunities)[number];
+  initialSaved: boolean;
+  isAuthenticated: boolean;
+}) {
   const meta = typeMeta[opportunity.type];
 
   return (
@@ -17,9 +29,18 @@ function OpportunityTeaser({ opportunity }: { opportunity: (typeof opportunities
           <span aria-hidden="true">{meta.icon}</span>
           {meta.label}
         </span>
-        <span style={{ fontSize: '11px', color: 'var(--ink-muted)' }}>
-          {opportunity.deadline.label}
-        </span>
+        <div className="card-top-actions">
+          <span style={{ fontSize: '11px', color: 'var(--ink-muted)' }}>
+            {opportunity.deadline.label}
+          </span>
+          <SaveOpportunityButton
+            opportunityId={opportunity.id}
+            opportunityTitle={opportunity.title}
+            initialSaved={initialSaved}
+            isAuthenticated={isAuthenticated}
+            returnTo="/"
+          />
+        </div>
       </div>
       <div className="card-title-heading">
         <h3>
@@ -40,7 +61,8 @@ function OpportunityTeaser({ opportunity }: { opportunity: (typeof opportunities
   );
 }
 
-export default function Home() {
+export default async function Home() {
+  const { user, savedIds } = await getSavedOpportunityState();
   const scholarshipCount = opportunities.filter((o) => o.type === 'Scholarship').length;
   const competitionCount = opportunities.filter((o) => o.type === 'Competition').length;
   const internshipCount = opportunities.filter((o) => o.type === 'Internship').length;
@@ -202,7 +224,12 @@ export default function Home() {
 
           <div className="opportunities-grid">
             {featuredOpportunities.map((opportunity) => (
-              <OpportunityTeaser key={opportunity.id} opportunity={opportunity} />
+              <OpportunityTeaser
+                key={opportunity.id}
+                opportunity={opportunity}
+                initialSaved={savedIds.includes(opportunity.id)}
+                isAuthenticated={Boolean(user)}
+              />
             ))}
           </div>
         </div>

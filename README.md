@@ -12,6 +12,7 @@ MaplePath is a public, Canada-first directory of scholarships, internships, and 
 - `/sign-in` — email/password sign-in
 - `/sign-up` — account creation with email confirmation
 - `/account` — signed-in account page
+- `/saved` — signed-in shortlist of saved opportunities
 - `/privacy` — account data and measurement notice
 - `/admin/signups` — private owner-only account metrics
 
@@ -31,6 +32,10 @@ MaplePath uses Supabase Auth for real email/password accounts. The directory rem
 6. For the private signup dashboard, configure `SUPABASE_SERVICE_ROLE_KEY` and `SUPABASE_ADMIN_EMAIL` only as server-side secrets. Never put the service-role key in a `NEXT_PUBLIC_*` variable or commit it.
 
 The owner can sign in with the configured admin email and open `/admin/signups`. “Registered accounts” is the count of unique Supabase Auth users; “Email-confirmed accounts” is the safer number to describe as verified registrations. Neither number is a page-view or unique-visitor metric.
+
+## Saved opportunities
+
+Signed-in users can save opportunities from the home highlights, directory cards, and detail pages. Their saved opportunity IDs are stored in their Supabase account metadata and shown at `/saved`. Signed-out visitors are sent to `/sign-in` and returned to the page they were viewing after authentication.
 
 ## Weekly catalog review
 

@@ -15,6 +15,10 @@ function errorMessage(error: string | undefined) {
       return 'That email and password combination did not work. If you just signed up, check your inbox for the confirmation email.';
     case 'confirm':
       return 'This confirmation link is invalid or expired. Request a new password or sign-up email and try again.';
+    case 'save-required':
+      return 'Sign in or create a free account to save opportunities. We’ll bring you back after you sign in.';
+    case 'saved-required':
+      return 'Sign in to view the opportunities you have saved.';
     case 'setup':
       return 'Accounts are not connected to this deployment yet. Please try again after the site setup is complete.';
     default:
@@ -45,7 +49,8 @@ export default async function SignInPage({ searchParams }: { searchParams: Searc
       <div className="auth-links">
         <Link href="/forgot-password">Forgot your password?</Link>
         <span>
-          New to MaplePath? <Link href="/sign-up">Create an account</Link>
+          New to MaplePath?{' '}
+          <Link href={`/sign-up?next=${encodeURIComponent(next)}`}>Create an account</Link>
         </span>
       </div>
     </AuthShell>

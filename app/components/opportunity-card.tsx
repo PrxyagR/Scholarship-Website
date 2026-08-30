@@ -1,4 +1,5 @@
 import type { Opportunity, OpportunityType } from '../data/opportunities';
+import { SaveOpportunityButton } from './save-opportunity-button';
 import { displayDate } from './site-chrome';
 
 export const typeMeta: Record<
@@ -10,7 +11,17 @@ export const typeMeta: Record<
   Internship: { label: 'Internship', badgeClass: 'badge-internship', icon: '↗' },
 };
 
-export function OpportunityCard({ opportunity }: { opportunity: Opportunity }) {
+export function OpportunityCard({
+  opportunity,
+  initialSaved = false,
+  isAuthenticated = false,
+  returnTo = '/opportunities',
+}: {
+  opportunity: Opportunity;
+  initialSaved?: boolean;
+  isAuthenticated?: boolean;
+  returnTo?: string;
+}) {
   const meta = typeMeta[opportunity.type];
 
   return (
@@ -20,9 +31,16 @@ export function OpportunityCard({ opportunity }: { opportunity: Opportunity }) {
           <span aria-hidden="true">{meta.icon}</span>
           {meta.label}
         </span>
-        {opportunity.featured && (
-          <span className="card-featured-pill">Featured</span>
-        )}
+        <div className="card-top-actions">
+          {opportunity.featured && <span className="card-featured-pill">Featured</span>}
+          <SaveOpportunityButton
+            opportunityId={opportunity.id}
+            opportunityTitle={opportunity.title}
+            initialSaved={initialSaved}
+            isAuthenticated={isAuthenticated}
+            returnTo={returnTo}
+          />
+        </div>
       </div>
 
       <div className="card-title-heading">

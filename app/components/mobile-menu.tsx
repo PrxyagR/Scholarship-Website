@@ -15,6 +15,11 @@ const mainLinks = [
     subtitle: 'Guide to eligibility, deadlines & official sources',
   },
   {
+    href: '/saved',
+    title: 'Saved opportunities',
+    subtitle: 'Keep a shortlist for later',
+  },
+  {
     href: '/about',
     title: 'About MaplePath',
     subtitle: 'Our story, editorial standards & weekly reviews',
