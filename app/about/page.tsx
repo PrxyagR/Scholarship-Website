@@ -38,7 +38,7 @@ export default function AboutPage() {
             <div className="editorial-stat-card-stack">
               <div className="editorial-stat-card">
                 <strong>100% Free & Open</strong>
-                <p>No paywalls, account walls, or hidden fees. Anyone can browse the entire directory instantly.</p>
+                <p>No paywalls or hidden fees. Anyone can browse the entire directory instantly; an optional account helps us measure reach.</p>
               </div>
               <div className="editorial-stat-card">
                 <strong>Canada-Focused</strong>

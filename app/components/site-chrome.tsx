@@ -32,6 +32,9 @@ export function SiteHeader() {
         <a href="/how-it-works">How it works</a>
         <a href="/about">About</a>
       </nav>
+      <a className="header-auth-link" href="/sign-in">
+        Sign in
+      </a>
       <a className="header-button" href="/opportunities">
         Browse catalog <span aria-hidden="true">↗</span>
       </a>
@@ -58,6 +61,7 @@ export function SiteFooter() {
           <a href="/opportunities">Directory</a>
           <a href="/how-it-works">How it works</a>
           <a href="/about">About</a>
+          <a href="/privacy">Privacy</a>
         </div>
       </div>
     </footer>

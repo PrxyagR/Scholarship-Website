@@ -67,6 +67,9 @@ export default function Home() {
               <a className="secondary-button" href="/how-it-works">
                 How it works
               </a>
+              <a className="text-link hero-account-link" href="/sign-up">
+                Create a free account <span aria-hidden="true">↗</span>
+              </a>
               <span className="hero-badge">
                 <span className="hero-badge-dot" aria-hidden="true" />
                 Grades 9–12 · All 13 provinces & territories
@@ -112,7 +115,7 @@ export default function Home() {
             </div>
             <div className="trust-item-text">
               <strong>100% Free & Open</strong>
-              <span>No accounts, fees, paywalls, or gated forms.</span>
+              <span>No fees, paywalls, or account required to browse.</span>
             </div>
           </div>
           <div className="trust-item">

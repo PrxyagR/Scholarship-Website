@@ -19,6 +19,11 @@ const mainLinks = [
     title: 'About MaplePath',
     subtitle: 'Our story, editorial standards & weekly reviews',
   },
+  {
+    href: '/sign-in',
+    title: 'Sign in / account',
+    subtitle: 'Access your MaplePath account',
+  },
 ];
 
 export function MobileMenu() {
