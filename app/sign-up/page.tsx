@@ -34,7 +34,7 @@ export default async function SignUpPage({ searchParams }: { searchParams: Searc
     <AuthShell
       eyebrow="Join the directory"
       title="Create your MaplePath account"
-      description="Create one free account so MaplePath can measure unique registrations and keep future student tools connected to the people they serve."
+      description="Create one free account to save opportunities, get a personalized shortlist, export deadlines, and track your application progress."
     >
       {error ? <AuthError>{error}</AuthError> : null}
       {checkEmail ? (

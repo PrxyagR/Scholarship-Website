@@ -29,6 +29,7 @@ export function SiteHeader() {
       </a>
       <nav className="desktop-nav" aria-label="Primary navigation">
         <a href="/opportunities">Explore catalog</a>
+        <a href="/dashboard">My dashboard</a>
         <a href="/saved">Saved</a>
         <a href="/how-it-works">How it works</a>
         <a href="/about">About</a>
@@ -60,6 +61,7 @@ export function SiteFooter() {
         <span>Catalog verified {displayDate(catalogUpdatedAt)} · Hand-reviewed weekly</span>
         <div style={{ display: 'flex', gap: '16px' }}>
           <a href="/opportunities">Directory</a>
+          <a href="/dashboard">Dashboard</a>
           <a href="/saved">Saved</a>
           <a href="/how-it-works">How it works</a>
           <a href="/about">About</a>

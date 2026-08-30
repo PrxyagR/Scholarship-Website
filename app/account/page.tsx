@@ -71,6 +71,9 @@ export default async function AccountPage({ searchParams }: { searchParams: Sear
         </div>
       ) : null}
       <div className="account-actions">
+        <Link className="primary-button" href="/dashboard">
+          Open student dashboard <span aria-hidden="true">↗</span>
+        </Link>
         <Link className="primary-button" href="/opportunities">
           Explore opportunities <span aria-hidden="true">↗</span>
         </Link>

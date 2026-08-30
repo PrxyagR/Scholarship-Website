@@ -37,9 +37,12 @@ export function SaveOpportunityButton({
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ opportunityId, returnTo }),
       });
-      const payload = await response.json().catch(() => null);
+      const payload = (await response.json().catch(() => null)) as {
+        redirectTo?: unknown;
+        saved?: unknown;
+      } | null;
 
-      if (response.status === 401 && payload?.redirectTo) {
+      if (response.status === 401 && typeof payload?.redirectTo === 'string') {
         window.location.assign(payload.redirectTo);
         return;
       }
@@ -52,7 +55,7 @@ export function SaveOpportunityButton({
       const nextSaved = Boolean(payload?.saved);
       setSaved(nextSaved);
 
-      if (!nextSaved && window.location.pathname === '/saved') {
+      if (!nextSaved && ['/saved', '/dashboard'].includes(window.location.pathname)) {
         window.location.reload();
       }
     } catch {

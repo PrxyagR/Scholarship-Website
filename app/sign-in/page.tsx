@@ -19,6 +19,8 @@ function errorMessage(error: string | undefined) {
       return 'Sign in or create a free account to save opportunities. We’ll bring you back after you sign in.';
     case 'saved-required':
       return 'Sign in to view the opportunities you have saved.';
+    case 'dashboard-required':
+      return 'Create a free account or sign in to use your private student dashboard, deadline calendar, and application tracker.';
     case 'setup':
       return 'Accounts are not connected to this deployment yet. Please try again after the site setup is complete.';
     default:

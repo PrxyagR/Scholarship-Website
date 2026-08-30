@@ -12,6 +12,7 @@ MaplePath is a public, Canada-first directory of scholarships, internships, and 
 - `/sign-in` — email/password sign-in
 - `/sign-up` — account creation with email confirmation
 - `/account` — signed-in account page
+- `/dashboard` — signed-in student profile, recommendations, deadline export, and application tracker
 - `/saved` — signed-in shortlist of saved opportunities
 - `/privacy` — account data and measurement notice
 - `/admin/signups` — private owner-only account metrics
@@ -36,6 +37,10 @@ The owner can sign in with the configured admin email and open `/admin/signups`.
 ## Saved opportunities
 
 Signed-in users can save opportunities from the home highlights, directory cards, and detail pages. Their saved opportunity IDs are stored in their Supabase account metadata and shown at `/saved`. Signed-out visitors are sent to `/sign-in` and returned to the page they were viewing after authentication.
+
+## Student dashboard
+
+Signed-in users can add an optional grade, province, and study-focus profile at `/dashboard` to receive a personalized shortlist. The dashboard also stores application status and private notes for saved opportunities and can export dated saved deadlines as an `.ics` calendar file. These tools are account-gated so student data is associated with the account that created it; browse access remains public.
 
 ## Weekly catalog review
 

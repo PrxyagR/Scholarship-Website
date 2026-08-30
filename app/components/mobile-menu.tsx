@@ -20,6 +20,11 @@ const mainLinks = [
     subtitle: 'Keep a shortlist for later',
   },
   {
+    href: '/dashboard',
+    title: 'My student dashboard',
+    subtitle: 'Track applications, deadlines & recommendations',
+  },
+  {
     href: '/about',
     title: 'About MaplePath',
     subtitle: 'Our story, editorial standards & weekly reviews',

@@ -11,10 +11,16 @@ import { createClient } from '@/lib/supabase/server';
 
 async function readPayload(request: NextRequest) {
   try {
-    const body = await request.json();
+    const body = (await request.json()) as {
+      opportunityId?: unknown;
+      returnTo?: unknown;
+    };
     return {
       opportunityId: body?.opportunityId,
-      returnTo: getSafeNextPath(body?.returnTo, '/opportunities'),
+      returnTo: getSafeNextPath(
+        typeof body.returnTo === 'string' ? body.returnTo : undefined,
+        '/opportunities',
+      ),
     };
   } catch {
     return { opportunityId: null, returnTo: '/opportunities' };
