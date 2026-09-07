@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation';
 import { signOut } from '../auth/actions';
 import { AuthError, AuthShell, AuthSuccess } from '../components/auth-shell';
 import { createClient } from '@/lib/supabase/server';
+import { isConfiguredAdmin } from '@/lib/supabase/admin';
 
 export const dynamic = 'force-dynamic';
 
@@ -47,8 +48,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Sear
     redirect('/sign-in?next=/account');
   }
 
-  const adminEmail = process.env.SUPABASE_ADMIN_EMAIL?.trim().toLowerCase();
-  const isAdmin = Boolean(adminEmail && user.email && user.email.toLowerCase() === adminEmail);
+  const isAdmin = isConfiguredAdmin(user);
 
   return (
     <AuthShell

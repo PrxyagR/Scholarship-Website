@@ -30,7 +30,7 @@ MaplePath uses Supabase Auth for real email/password accounts. The directory rem
    - `http://localhost:3000/auth/confirm`
    - `http://localhost:3000/auth/callback`
 5. Keep email confirmation enabled. The confirmation route accepts Supabase’s `token_hash` email links; if you customize the Confirm signup email template, its link can use `{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=email`.
-6. For the private signup dashboard, configure `SUPABASE_SERVICE_ROLE_KEY` and `SUPABASE_ADMIN_EMAIL` only as server-side secrets. Never put the service-role key in a `NEXT_PUBLIC_*` variable or commit it.
+6. For the private signup dashboard, create a modern `sb_secret_...` key and configure it as `SUPABASE_SECRET_KEY`. Set `SUPABASE_ADMIN_USER_ID` to the owner’s immutable Supabase Auth user ID. `SUPABASE_SERVICE_ROLE_KEY` and `SUPABASE_ADMIN_EMAIL` remain supported only as migration fallbacks. Never put either secret in generic public settings, a `NEXT_PUBLIC_*` variable, chat, logs, or source control.
 
 The owner can sign in with the configured admin email and open `/admin/signups`. “Registered accounts” is the count of unique Supabase Auth users; “Email-confirmed accounts” is the safer number to describe as verified registrations. Neither number is a page-view or unique-visitor metric.
 

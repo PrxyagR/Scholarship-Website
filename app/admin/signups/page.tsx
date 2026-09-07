@@ -1,6 +1,6 @@
 import { notFound, redirect } from 'next/navigation';
 import { AuthError, AuthShell } from '../../components/auth-shell';
-import { countRegisteredUsers } from '@/lib/supabase/admin';
+import { countRegisteredUsers, isConfiguredAdmin } from '@/lib/supabase/admin';
 import { createClient } from '@/lib/supabase/server';
 
 export const dynamic = 'force-dynamic';
@@ -28,8 +28,7 @@ export default async function SignupMetricsPage() {
     redirect('/sign-in?next=/admin/signups');
   }
 
-  const adminEmail = process.env.SUPABASE_ADMIN_EMAIL?.trim().toLowerCase();
-  if (!adminEmail || !user.email || user.email.toLowerCase() !== adminEmail) {
+  if (!isConfiguredAdmin(user)) {
     notFound();
   }
 
@@ -50,11 +49,11 @@ export default async function SignupMetricsPage() {
     >
       {metricsError ? (
         <AuthError>
-          The account count could not be loaded. Check that the server-only service-role key is configured.
+          The account count could not be loaded. Check that the server-only Supabase secret key is configured.
         </AuthError>
       ) : null}
       {!metricsError && !metrics ? (
-        <AuthError>Set the server-only Supabase service-role key to load signup metrics.</AuthError>
+        <AuthError>Set the server-only Supabase secret key to load signup metrics.</AuthError>
       ) : null}
       {metrics ? (
         <div className="metrics-grid" aria-label="Signup metrics">

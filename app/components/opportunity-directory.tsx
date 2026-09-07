@@ -1,6 +1,14 @@
 'use client';
 
-import { useEffect, useMemo, useState, type Dispatch, type SetStateAction } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type Dispatch,
+  type SetStateAction,
+} from 'react';
 import {
   catalogUpdatedAt,
   opportunities,
@@ -15,24 +23,40 @@ import { displayDate, Eyebrow } from './site-chrome';
 export default function OpportunityDirectory({
   initialSavedIds = [],
   isAuthenticated = false,
+  initialTypes = [],
+  initialGrades = [],
 }: {
   initialSavedIds?: string[];
   isAuthenticated?: boolean;
+  initialTypes?: OpportunityType[];
+  initialGrades?: number[];
 }) {
   const [query, setQuery] = useState('');
-  const [selectedTypes, setSelectedTypes] = useState<OpportunityType[]>([]);
+  const [selectedTypes, setSelectedTypes] = useState<OpportunityType[]>(initialTypes);
   const [selectedProvinces, setSelectedProvinces] = useState<string[]>([]);
-  const [selectedGrades, setSelectedGrades] = useState<number[]>([]);
+  const [selectedGrades, setSelectedGrades] = useState<number[]>(initialGrades);
   const [selectedFocuses, setSelectedFocuses] = useState<StudyFocus[]>([]);
   const [selectedLocations, setSelectedLocations] = useState<LocationMode[]>([]);
   const [selectedCity, setSelectedCity] = useState('');
   const [sortBy, setSortBy] = useState<'recommended' | 'deadline' | 'recent'>('recommended');
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  const mobileFilterTriggerRef = useRef<HTMLButtonElement>(null);
+  const mobileFilterSheetRef = useRef<HTMLDivElement>(null);
+
+  const closeMobileFilters = useCallback(() => {
+    setMobileFiltersOpen(false);
+    window.requestAnimationFrame(() => mobileFilterTriggerRef.current?.focus());
+  }, []);
 
   // Lock background scroll when mobile filter drawer is open
   useEffect(() => {
     if (mobileFiltersOpen) {
       document.body.style.overflow = 'hidden';
+      window.requestAnimationFrame(() => {
+        mobileFilterSheetRef.current
+          ?.querySelector<HTMLElement>('button, input, select, [tabindex]:not([tabindex="-1"])')
+          ?.focus();
+      });
     } else {
       document.body.style.overflow = '';
     }
@@ -41,11 +65,31 @@ export default function OpportunityDirectory({
     };
   }, [mobileFiltersOpen]);
 
-  // Handle Escape key to close mobile filter sheet
+  // Keep keyboard focus inside the filter sheet and close it with Escape.
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && mobileFiltersOpen) {
-        setMobileFiltersOpen(false);
+        closeMobileFilters();
+        return;
+      }
+
+      if (e.key === 'Tab' && mobileFiltersOpen) {
+        const focusable = Array.from(
+          mobileFilterSheetRef.current?.querySelectorAll<HTMLElement>(
+            'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])',
+          ) ?? [],
+        );
+        const first = focusable[0];
+        const last = focusable.at(-1);
+
+        if (!first || !last) return;
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
       }
     };
     if (mobileFiltersOpen) {
@@ -54,7 +98,7 @@ export default function OpportunityDirectory({
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
     };
-  }, [mobileFiltersOpen]);
+  }, [closeMobileFilters, mobileFiltersOpen]);
 
   const cities = useMemo(
     () => Array.from(new Set(opportunities.map((opportunity) => opportunity.city))).sort(),
@@ -234,6 +278,7 @@ export default function OpportunityDirectory({
               </label>
 
               <button
+                ref={mobileFilterTriggerRef}
                 className="mobile-filter-trigger-btn"
                 type="button"
                 onClick={() => setMobileFiltersOpen(true)}
@@ -412,10 +457,11 @@ export default function OpportunityDirectory({
       {mobileFiltersOpen && (
         <div
           className="mobile-filter-modal-backdrop"
-          onClick={() => setMobileFiltersOpen(false)}
+          onClick={closeMobileFilters}
           role="presentation"
         >
           <div
+            ref={mobileFilterSheetRef}
             className="mobile-filter-sheet-content"
             role="dialog"
             aria-modal="true"
@@ -426,7 +472,7 @@ export default function OpportunityDirectory({
               <FilterPanel
                 {...filterProps}
                 mobile
-                onClose={() => setMobileFiltersOpen(false)}
+                onClose={closeMobileFilters}
               />
             </div>
           </div>

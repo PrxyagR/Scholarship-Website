@@ -1,13 +1,11 @@
 import { type NextRequest, NextResponse } from 'next/server';
 import { parseStudentProfile, STUDENT_PROFILE_KEY } from '@/lib/student-tools';
 import { createClient } from '@/lib/supabase/server';
+import { readJsonPayload, validateJsonMutation } from '@/lib/request-security';
 
-async function getUserContext(request: NextRequest) {
-  const origin = request.headers.get('origin');
-  if (origin && origin !== new URL(request.url).origin) {
-    return { response: NextResponse.json({ error: 'invalid_origin' }, { status: 403 }) };
-  }
+const MAX_REQUEST_BYTES = 8 * 1024;
 
+async function getUserContext() {
   const supabase = await createClient();
   if (!supabase) return { response: NextResponse.json({ error: 'setup' }, { status: 503 }) };
 
@@ -31,15 +29,15 @@ async function getUserContext(request: NextRequest) {
 }
 
 export async function PUT(request: NextRequest) {
-  const context = await getUserContext(request);
+  const unsafeRequest = validateJsonMutation(request, MAX_REQUEST_BYTES);
+  if (unsafeRequest) return unsafeRequest;
+
+  const context = await getUserContext();
   if ('response' in context) return context.response;
 
-  let body: unknown;
-  try {
-    body = await request.json();
-  } catch {
-    return NextResponse.json({ error: 'invalid_payload' }, { status: 400 });
-  }
+  const payload = await readJsonPayload(request, MAX_REQUEST_BYTES);
+  if (payload.response) return payload.response;
+  const body = payload.body;
 
   const profile = parseStudentProfile(
     body && typeof body === 'object' && 'profile' in body
@@ -51,7 +49,6 @@ export async function PUT(request: NextRequest) {
 
   const { error } = await context.supabase.auth.updateUser({
     data: {
-      ...context.user.user_metadata,
       [STUDENT_PROFILE_KEY]: profile,
     },
   });

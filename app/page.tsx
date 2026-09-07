@@ -180,7 +180,7 @@ export default async function Home() {
             <p>
               Merit awards, community leadership grants, STEM scholarships, and bursaries open to Canadian secondary school students.
             </p>
-            <a className="feature-box-link" href="/opportunities">
+            <a className="feature-box-link" href="/opportunities?type=Scholarship">
               Browse scholarships <span aria-hidden="true">↗</span>
             </a>
           </div>
@@ -191,7 +191,7 @@ export default async function Home() {
             <p>
               Math olympiads, computing challenges, science fairs, writing contests, and business pitch competitions with national recognition.
             </p>
-            <a className="feature-box-link" href="/opportunities">
+            <a className="feature-box-link" href="/opportunities?type=Competition">
               Browse competitions <span aria-hidden="true">↗</span>
             </a>
           </div>
@@ -202,7 +202,7 @@ export default async function Home() {
             <p>
               Summer research placements, youth government councils, hospital internships, and nonprofit fellowships for motivated students.
             </p>
-            <a className="feature-box-link" href="/opportunities">
+            <a className="feature-box-link" href="/opportunities?type=Internship">
               Browse internships <span aria-hidden="true">↗</span>
             </a>
           </div>

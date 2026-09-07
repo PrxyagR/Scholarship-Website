@@ -56,12 +56,32 @@ export function MobileMenu() {
     };
   }, [open]);
 
-  // Handle Escape key
+  // Keep keyboard focus inside the modal drawer and close it with Escape.
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape' && open) {
         setOpen(false);
         toggleRef.current?.focus();
+        return;
+      }
+
+      if (event.key === 'Tab' && open) {
+        const focusable = Array.from(
+          drawerRef.current?.querySelectorAll<HTMLElement>(
+            'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])',
+          ) ?? [],
+        );
+        const first = focusable[0];
+        const last = focusable.at(-1);
+
+        if (!first || !last) return;
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
       }
     };
 
@@ -134,28 +154,28 @@ export function MobileMenu() {
               <span className="mobile-quick-filters-label">Quick Jump to Catalog</span>
               <div className="mobile-quick-pills">
                 <a
-                  href="/opportunities"
+                  href="/opportunities?type=Scholarship"
                   className="mobile-quick-pill"
                   onClick={closeMenu}
                 >
                   Scholarships
                 </a>
                 <a
-                  href="/opportunities"
+                  href="/opportunities?type=Competition"
                   className="mobile-quick-pill"
                   onClick={closeMenu}
                 >
                   Competitions
                 </a>
                 <a
-                  href="/opportunities"
+                  href="/opportunities?type=Internship"
                   className="mobile-quick-pill"
                   onClick={closeMenu}
                 >
                   Internships
                 </a>
                 <a
-                  href="/opportunities"
+                  href="/opportunities?grade=9&grade=10&grade=11&grade=12"
                   className="mobile-quick-pill"
                   onClick={closeMenu}
                 >

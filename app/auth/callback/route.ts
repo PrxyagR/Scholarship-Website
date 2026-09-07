@@ -32,10 +32,15 @@ export async function GET(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (user && provider === 'google') {
+  const providers = Array.isArray(user?.app_metadata?.providers)
+    ? user.app_metadata.providers
+    : [];
+  const isGoogleAccount =
+    user?.app_metadata?.provider === 'google' || providers.includes('google');
+
+  if (user && provider === 'google' && isGoogleAccount) {
     await supabase.auth.updateUser({
       data: {
-        ...user.user_metadata,
         maplepath_consent: true,
         consent_version: CONSENT_VERSION,
         maplepath_auth_provider: 'google',

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export function SaveOpportunityButton({
   opportunityId,
@@ -15,6 +16,7 @@ export function SaveOpportunityButton({
   isAuthenticated?: boolean;
   returnTo?: string;
 }) {
+  const router = useRouter();
   const [saved, setSaved] = useState(initialSaved);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState(false);
@@ -24,7 +26,7 @@ export function SaveOpportunityButton({
     if (pending) return;
 
     if (!isAuthenticated) {
-      window.location.assign(signInUrl);
+      router.push(signInUrl);
       return;
     }
 
@@ -43,7 +45,7 @@ export function SaveOpportunityButton({
       } | null;
 
       if (response.status === 401 && typeof payload?.redirectTo === 'string') {
-        window.location.assign(payload.redirectTo);
+        router.push(payload.redirectTo);
         return;
       }
 
@@ -56,7 +58,7 @@ export function SaveOpportunityButton({
       setSaved(nextSaved);
 
       if (!nextSaved && ['/saved', '/dashboard'].includes(window.location.pathname)) {
-        window.location.reload();
+        router.refresh();
       }
     } catch {
       setError(true);

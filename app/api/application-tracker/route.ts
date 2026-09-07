@@ -7,13 +7,11 @@ import {
   type ApplicationStatus,
 } from '@/lib/student-tools';
 import { createClient } from '@/lib/supabase/server';
+import { readJsonPayload, validateJsonMutation } from '@/lib/request-security';
 
-async function getUserContext(request: NextRequest) {
-  const origin = request.headers.get('origin');
-  if (origin && origin !== new URL(request.url).origin) {
-    return { response: NextResponse.json({ error: 'invalid_origin' }, { status: 403 }) };
-  }
+const MAX_REQUEST_BYTES = 12 * 1024;
 
+async function getUserContext() {
   const supabase = await createClient();
   if (!supabase) return { response: NextResponse.json({ error: 'setup' }, { status: 503 }) };
 
@@ -37,13 +35,21 @@ async function getUserContext(request: NextRequest) {
 }
 
 export async function PATCH(request: NextRequest) {
-  const context = await getUserContext(request);
+  const unsafeRequest = validateJsonMutation(request, MAX_REQUEST_BYTES);
+  if (unsafeRequest) return unsafeRequest;
+
+  const context = await getUserContext();
   if ('response' in context) return context.response;
 
-  let body: { opportunityId?: unknown; status?: unknown; note?: unknown };
-  try {
-    body = await request.json();
-  } catch {
+  const payload = await readJsonPayload(request, MAX_REQUEST_BYTES);
+  if (payload.response) return payload.response;
+  const body = payload.body as {
+    opportunityId?: unknown;
+    status?: unknown;
+    note?: unknown;
+  } | null;
+
+  if (!body || typeof body !== 'object' || Array.isArray(body)) {
     return NextResponse.json({ error: 'invalid_payload' }, { status: 400 });
   }
 
@@ -73,7 +79,6 @@ export async function PATCH(request: NextRequest) {
 
   const { error } = await context.supabase.auth.updateUser({
     data: {
-      ...context.user.user_metadata,
       [APPLICATION_TRACKER_KEY]: tracker,
     },
   });

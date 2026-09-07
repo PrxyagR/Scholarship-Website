@@ -1,8 +1,21 @@
 import { createClient } from '@supabase/supabase-js';
+import type { User } from '@supabase/supabase-js';
+
+export function isConfiguredAdmin(user: User | null | undefined) {
+  if (!user || !user.email_confirmed_at) return false;
+
+  const adminUserId = process.env.SUPABASE_ADMIN_USER_ID?.trim();
+  if (adminUserId) return user.id === adminUserId;
+
+  const adminEmail = process.env.SUPABASE_ADMIN_EMAIL?.trim().toLowerCase();
+  return Boolean(adminEmail && user.email?.toLowerCase() === adminEmail);
+}
 
 export function createAdminClient() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY?.trim();
+  const serviceRoleKey =
+    process.env.SUPABASE_SECRET_KEY?.trim() ||
+    process.env.SUPABASE_SERVICE_ROLE_KEY?.trim();
 
   if (!url || !serviceRoleKey) return null;
 

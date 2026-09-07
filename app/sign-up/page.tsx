@@ -1,7 +1,9 @@
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 import { signInWithGoogle, signUp } from '../auth/actions';
 import { AuthError, AuthField, AuthShell, AuthSuccess } from '../components/auth-shell';
 import { getSafeNextPath } from '@/lib/supabase/redirects';
+import { createClient } from '@/lib/supabase/server';
 
 type SearchParams = Promise<Record<string, string | string[] | undefined>>;
 
@@ -29,6 +31,15 @@ export default async function SignUpPage({ searchParams }: { searchParams: Searc
   const error = errorMessage(firstValue(query.error));
   const checkEmail = firstValue(query.message) === 'check-email';
   const next = getSafeNextPath(firstValue(query.next), '/account');
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = supabase ? await supabase.auth.getUser() : { data: { user: null } };
+
+  if (user) redirect(next);
+
+  const googleAction = signInWithGoogle.bind(null, next);
+  const emailAction = signUp.bind(null, next);
 
   return (
     <AuthShell
@@ -42,8 +53,7 @@ export default async function SignUpPage({ searchParams }: { searchParams: Searc
           Your account is almost ready. Check your inbox and click the confirmation link before signing in.
       </AuthSuccess>
       ) : null}
-      <form className="auth-form" action={signInWithGoogle}>
-        <input type="hidden" name="next" value={next} />
+      <form className="auth-form" action={googleAction}>
         <label className="auth-checkbox">
           <input name="google_consent" type="checkbox" required />
           <span>
@@ -58,8 +68,7 @@ export default async function SignUpPage({ searchParams }: { searchParams: Searc
       <div className="auth-divider" aria-hidden="true">
         <span>or create with email</span>
       </div>
-      <form className="auth-form" action={signUp}>
-        <input type="hidden" name="next" value={next} />
+      <form className="auth-form" action={emailAction}>
         <AuthField id="email" label="Email address" type="email" autoComplete="email" />
         <AuthField
           id="password"

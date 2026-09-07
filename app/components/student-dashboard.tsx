@@ -24,6 +24,12 @@ function escapeIcs(value: string) {
   return value.replace(/\\/g, '\\\\').replace(/\r?\n/g, '\\n').replace(/,/g, '\\,').replace(/;/g, '\\;');
 }
 
+function nextCalendarDate(value: string) {
+  const date = new Date(`${value}T00:00:00Z`);
+  date.setUTCDate(date.getUTCDate() + 1);
+  return date.toISOString().slice(0, 10).replaceAll('-', '');
+}
+
 function downloadCalendar(opportunitiesToExport: Opportunity[]) {
   const datedOpportunities = opportunitiesToExport.filter((opportunity) => opportunity.deadline.date);
   if (!datedOpportunities.length) return;
@@ -38,12 +44,13 @@ function downloadCalendar(opportunitiesToExport: Opportunity[]) {
 
   for (const opportunity of datedOpportunities) {
     const date = opportunity.deadline.date!.replaceAll('-', '');
+    const endDate = nextCalendarDate(opportunity.deadline.date!);
     lines.push(
       'BEGIN:VEVENT',
       `UID:${escapeIcs(opportunity.id)}@maplepath`,
       `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d{3}Z$/, 'Z')}`,
       `DTSTART;VALUE=DATE:${date}`,
-      `DTEND;VALUE=DATE:${date}`,
+      `DTEND;VALUE=DATE:${endDate}`,
       `SUMMARY:${escapeIcs(`MaplePath deadline: ${opportunity.title}`)}`,
       `DESCRIPTION:${escapeIcs(`${opportunity.provider} · Official page: ${opportunity.applyUrl}`)}`,
       `URL:${opportunity.applyUrl}`,
@@ -60,7 +67,7 @@ function downloadCalendar(opportunitiesToExport: Opportunity[]) {
   document.body.appendChild(link);
   link.click();
   link.remove();
-  URL.revokeObjectURL(url);
+  window.setTimeout(() => URL.revokeObjectURL(url), 1_000);
 }
 
 function recordFor(tracker: ApplicationTracker, opportunityId: string): ApplicationRecord {

@@ -1,7 +1,9 @@
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 import { signIn, signInWithGoogle } from '../auth/actions';
 import { AuthError, AuthField, AuthShell } from '../components/auth-shell';
 import { getSafeNextPath } from '@/lib/supabase/redirects';
+import { createClient } from '@/lib/supabase/server';
 
 type SearchParams = Promise<Record<string, string | string[] | undefined>>;
 
@@ -35,7 +37,16 @@ function errorMessage(error: string | undefined) {
 export default async function SignInPage({ searchParams }: { searchParams: SearchParams }) {
   const query = await searchParams;
   const next = getSafeNextPath(firstValue(query.next), '/account');
-  const message = errorMessage(firstValue(query.error));
+  const message = errorMessage(firstValue(query.error) ?? firstValue(query.message));
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = supabase ? await supabase.auth.getUser() : { data: { user: null } };
+
+  if (user) redirect(next);
+
+  const googleAction = signInWithGoogle.bind(null, next);
+  const emailAction = signIn.bind(null, next);
 
   return (
     <AuthShell
@@ -44,8 +55,7 @@ export default async function SignInPage({ searchParams }: { searchParams: Searc
       description="Keep your directory experience ready for the next scholarship, competition, or internship worth pursuing."
     >
       {message ? <AuthError>{message}</AuthError> : null}
-      <form className="auth-form" action={signInWithGoogle}>
-        <input type="hidden" name="next" value={next} />
+      <form className="auth-form" action={googleAction}>
         <label className="auth-checkbox">
           <input name="google_consent" type="checkbox" required />
           <span>
@@ -60,8 +70,7 @@ export default async function SignInPage({ searchParams }: { searchParams: Searc
       <div className="auth-divider" aria-hidden="true">
         <span>or use email</span>
       </div>
-      <form className="auth-form" action={signIn}>
-        <input type="hidden" name="next" value={next} />
+      <form className="auth-form" action={emailAction}>
         <AuthField id="email" label="Email address" type="email" autoComplete="email" />
         <AuthField id="password" label="Password" type="password" autoComplete="current-password" />
         <button className="auth-submit" type="submit">

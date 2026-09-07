@@ -22,14 +22,14 @@ function isValidEmail(email: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
-function getNext(formData: FormData) {
-  return getSafeNextPath(readString(formData, 'next'), '/account');
+function getNext(value: string) {
+  return getSafeNextPath(value, '/account');
 }
 
-export async function signIn(formData: FormData) {
+export async function signIn(nextPath: string, formData: FormData) {
   const email = readEmail(formData);
   const password = readString(formData, 'password');
-  const next = getNext(formData);
+  const next = getNext(nextPath);
 
   if (!isValidEmail(email) || !password) {
     redirect(`/sign-in?error=invalid&next=${encodeURIComponent(next)}`);
@@ -49,9 +49,9 @@ export async function signIn(formData: FormData) {
   redirect(next);
 }
 
-export async function signInWithGoogle(formData: FormData) {
+export async function signInWithGoogle(nextPath: string, formData: FormData) {
   const consent = readString(formData, 'google_consent');
-  const next = getNext(formData);
+  const next = getNext(nextPath);
 
   if (consent !== 'on') {
     redirect(`/sign-in?error=consent&next=${encodeURIComponent(next)}`);
@@ -76,12 +76,12 @@ export async function signInWithGoogle(formData: FormData) {
   redirect(data.url);
 }
 
-export async function signUp(formData: FormData) {
+export async function signUp(nextPath: string, formData: FormData) {
   const email = readEmail(formData);
   const password = readString(formData, 'password');
   const passwordConfirmation = readString(formData, 'password_confirmation');
   const consent = readString(formData, 'privacy_consent');
-  const next = getNext(formData);
+  const next = getNext(nextPath);
 
   if (!isValidEmail(email)) {
     redirect(`/sign-up?error=invalid-email&next=${encodeURIComponent(next)}`);

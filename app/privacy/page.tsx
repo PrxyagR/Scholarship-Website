@@ -10,7 +10,7 @@ export default function PrivacyPage() {
       <div className="privacy-copy">
         <h2>What we collect</h2>
         <p>
-          When you create an account, MaplePath stores your email address, account creation time, and the authentication records needed to sign you in securely. We do not ask for your school, grade, home address, date of birth, or application materials.
+          When you create an account, MaplePath stores your email address, account creation time, and the authentication records needed to sign you in securely. We do not ask for your school, home address, date of birth, or application materials.
         </p>
         <p>
           If you use the Save feature, MaplePath stores the IDs of the opportunities you chose so your shortlist can appear when you return. The saved list does not include application answers or information submitted to opportunity providers.
@@ -30,7 +30,7 @@ export default function PrivacyPage() {
         <p>
           Use an email address you are allowed to use for this service. If you are under the age where your consent is required in your jurisdiction, ask a parent or guardian before creating an account. Do not put sensitive personal information into any MaplePath form.
         </p>
-        <p className="privacy-last-updated">Last updated August 29, 2026.</p>
+        <p className="privacy-last-updated">Last updated September 7, 2026.</p>
       </div>
     </AuthShell>
   );
