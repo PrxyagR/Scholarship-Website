@@ -1,4 +1,4 @@
-const DEFAULT_SITE_URL = 'https://maplepath-opportunities.prayagrakholia7.chatgpt.site';
+const DEFAULT_SITE_URL = 'https://maplepath.site';
 
 export function getSupabaseConfig() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();

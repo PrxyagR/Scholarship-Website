@@ -25,8 +25,8 @@ MaplePath uses Supabase Auth for real email/password accounts. The directory rem
 2. In the Supabase project settings, copy the Project URL and the public publishable key into `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`. Older projects can use `NEXT_PUBLIC_SUPABASE_ANON_KEY` instead.
 3. Set `NEXT_PUBLIC_SITE_URL` to the deployed MaplePath URL, or `http://localhost:3000` for local development.
 4. In Supabase Auth URL Configuration, set the Site URL and add these redirect URLs:
-   - `https://maplepath-opportunities.prayagrakholia7.chatgpt.site/auth/confirm`
-   - `https://maplepath-opportunities.prayagrakholia7.chatgpt.site/auth/callback`
+   - `https://maplepath.site/auth/confirm`
+   - `https://maplepath.site/auth/callback`
    - `http://localhost:3000/auth/confirm`
    - `http://localhost:3000/auth/callback`
 5. Keep email confirmation enabled. The confirmation route accepts Supabase’s `token_hash` email links; if you customize the Confirm signup email template, its link can use `{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=email`.
@@ -36,7 +36,7 @@ The owner can sign in with the configured admin email and open `/admin/signups`.
 
 ### Google sign-in setup
 
-The sign-in and sign-up pages include a Google button. To activate it, create a Google OAuth client with the Web application type, add the deployed MaplePath origin as an authorized JavaScript origin, and add the Supabase Auth callback (`https://<your-project-ref>.supabase.co/auth/v1/callback`) as an authorized redirect URI. Then enable Google under Supabase Dashboard → Authentication → Providers and paste the Google client ID and secret. In Supabase URL Configuration, allow the MaplePath callback (`https://maplepath-opportunities.prayagrakholia7.chatgpt.site/auth/callback`) and the local callback used during development. The button preserves the student’s return path to the dashboard or saved list.
+The sign-in and sign-up pages include a Google button. To activate it, create a Google OAuth client with the Web application type, add the deployed MaplePath origin as an authorized JavaScript origin, and add the Supabase Auth callback (`https://<your-project-ref>.supabase.co/auth/v1/callback`) as an authorized redirect URI. Then enable Google under Supabase Dashboard → Authentication → Providers and paste the Google client ID and secret. In Supabase URL Configuration, allow the MaplePath callback (`https://maplepath.site/auth/callback`) and the local callback used during development. The button preserves the student’s return path to the dashboard or saved list.
 
 ## Saved opportunities
 

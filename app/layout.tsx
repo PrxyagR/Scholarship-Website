@@ -8,7 +8,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://maplepath-opportunities.prayagrakholia7.chatgpt.site'),
+  metadataBase: new URL('https://maplepath.site'),
   title: 'MaplePath | High School Scholarships, Internships & Competitions in Canada',
   description:
     'A free, hand-verified directory of scholarships, academic competitions, and internships curated for Canadian high school students in Grades 9–12.',
