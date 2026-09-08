@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-html-link-for-pages, @next/next/no-img-element */
 import { catalogUpdatedAt } from '../data/opportunities';
 import { MobileMenu } from './mobile-menu';
+import { createClient } from '@/lib/supabase/server';
 
 export const displayDate = (value: string) =>
   new Intl.DateTimeFormat('en-CA', { month: 'long', day: 'numeric', year: 'numeric' }).format(
@@ -20,7 +21,13 @@ function BrandMark() {
   );
 }
 
-export function SiteHeader() {
+export async function SiteHeader() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = supabase ? await supabase.auth.getUser() : { data: { user: null } };
+  const isAuthenticated = Boolean(user);
+
   return (
     <header className="site-header">
       <a className="brand" href="/" aria-label="MaplePath home">
@@ -34,13 +41,13 @@ export function SiteHeader() {
         <a href="/how-it-works">How it works</a>
         <a href="/about">About</a>
       </nav>
-      <a className="header-auth-link" href="/sign-in">
-        Sign in
+      <a className="header-auth-link" href={isAuthenticated ? '/account' : '/sign-in'}>
+        {isAuthenticated ? 'Account' : 'Sign in'}
       </a>
       <a className="header-button" href="/opportunities">
         Browse catalog <span aria-hidden="true">↗</span>
       </a>
-      <MobileMenu />
+      <MobileMenu isAuthenticated={isAuthenticated} />
     </header>
   );
 }

@@ -29,14 +29,9 @@ const mainLinks = [
     title: 'About MaplePath',
     subtitle: 'Our story, editorial standards & weekly reviews',
   },
-  {
-    href: '/sign-in',
-    title: 'Sign in / account',
-    subtitle: 'Access your MaplePath account',
-  },
 ];
 
-export function MobileMenu() {
+export function MobileMenu({ isAuthenticated = false }: { isAuthenticated?: boolean }) {
   const [open, setOpen] = useState(false);
   const toggleRef = useRef<HTMLButtonElement>(null);
   const drawerRef = useRef<HTMLDivElement>(null);
@@ -132,7 +127,16 @@ export function MobileMenu() {
             aria-label="Mobile Navigation"
           >
             <nav className="mobile-menu-links" aria-label="Mobile menu navigation">
-              {mainLinks.map((link) => (
+              {[
+                ...mainLinks,
+                {
+                  href: isAuthenticated ? '/account' : '/sign-in',
+                  title: isAuthenticated ? 'Account' : 'Sign in',
+                  subtitle: isAuthenticated
+                    ? 'Manage your MaplePath account'
+                    : 'Access your MaplePath account',
+                },
+              ].map((link) => (
                 <a
                   key={link.href}
                   href={link.href}
