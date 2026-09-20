@@ -18,6 +18,7 @@ import {
   type StudentProfile,
 } from '@/lib/student-tools';
 import { Eyebrow } from './site-chrome';
+import { MapleWatermark, MapleTreeEmblem, TreeGrowthStage } from './brand-motif';
 
 export default function RoadmapBuilder({
   initialAnswers,
@@ -68,15 +69,16 @@ export default function RoadmapBuilder({
 
   return (
     <main className="roadmap-page-wrapper">
-      <section className="roadmap-hero">
-        <div>
+      <section className="roadmap-hero relative overflow-hidden">
+        <MapleWatermark className="right-0 top-0 w-80 h-full text-[var(--spruce-primary)]" opacity={0.06} />
+        <div className="relative z-10">
           <Eyebrow>Private student roadmap</Eyebrow>
           <h1>Turn a broad interest into a next step.</h1>
           <p>
             A short planning tool for choosing one direction, finding a realistic opportunity, and keeping your application moving.
           </p>
         </div>
-        <div className="roadmap-profile-chip">
+        <div className="roadmap-profile-chip relative z-10">
           <span>Using your profile</span>
           <strong>{profileLabel}</strong>
           <Link href="/dashboard">Edit profile ↗</Link>
@@ -172,6 +174,9 @@ export default function RoadmapBuilder({
         <aside className="roadmap-why-card">
           <Eyebrow>A useful constraint</Eyebrow>
           <h2>One strong next step beats ten open tabs.</h2>
+          <div className="my-3 flex justify-center">
+            <MapleTreeEmblem className="w-28 h-28 opacity-90" />
+          </div>
           <p>
             MaplePath keeps this plan deliberately small. Use it to choose something you can actually finish, then let your shortlist and tracker do the remembering.
           </p>
@@ -190,7 +195,10 @@ export default function RoadmapBuilder({
         <div className="roadmap-steps-grid">
           {steps.map((step) => (
             <article className="roadmap-step-card" key={step.number}>
-              <span className="roadmap-step-number">{step.number}</span>
+              <div className="flex items-center gap-2 mb-2">
+                <span className="roadmap-step-badge" aria-hidden="true">{step.number}</span>
+                <TreeGrowthStage grade={8 + Number(step.number)} className="h-4 w-4" />
+              </div>
               <h3>{step.title}</h3>
               <p>{step.body}</p>
               <Link className="text-link" href={step.href}>{step.linkLabel} <span aria-hidden="true">↗</span></Link>

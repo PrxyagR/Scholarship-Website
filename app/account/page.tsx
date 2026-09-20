@@ -77,24 +77,32 @@ export default async function AccountPage({ searchParams }: { searchParams: Sear
         <Link className="primary-button" href="/dashboard">
           Open student dashboard <span aria-hidden="true">↗</span>
         </Link>
-        <Link className="primary-button" href="/roadmap">
-          Build my roadmap <span aria-hidden="true">↗</span>
-        </Link>
-        <Link className="primary-button" href="/opportunities">
-          Explore opportunities <span aria-hidden="true">↗</span>
-        </Link>
-        <Link className="secondary-button" href="/saved">
-          View saved opportunities
-        </Link>
-        <Link className="secondary-button" href="/forgot-password">
-          Change password
-        </Link>
-        <form action={signOut}>
-          <button className="account-signout" type="submit">
-            Sign out
-          </button>
-        </form>
       </div>
+
+      <div className="account-nav-grid">
+        <Link className="account-nav-card" href="/roadmap">
+          <strong>Student Roadmap <span aria-hidden="true">↗</span></strong>
+          <span>Turn your interests into a 4-step actionable plan</span>
+        </Link>
+        <Link className="account-nav-card" href="/saved">
+          <strong>Saved Shortlist <span aria-hidden="true">↗</span></strong>
+          <span>View and compare your saved opportunities</span>
+        </Link>
+        <Link className="account-nav-card" href="/opportunities">
+          <strong>Explore Catalog <span aria-hidden="true">↗</span></strong>
+          <span>Filter scholarships, contests & internships</span>
+        </Link>
+        <Link className="account-nav-card" href="/forgot-password">
+          <strong>Security & Password <span aria-hidden="true">↗</span></strong>
+          <span>Update your password and credentials</span>
+        </Link>
+      </div>
+
+      <form action={signOut} style={{ marginTop: '16px' }}>
+        <button className="account-signout" type="submit">
+          Sign out
+        </button>
+      </form>
       {firstValue(query.message) === 'password-updated' ? (
         <AuthSuccess>Your password was updated successfully.</AuthSuccess>
       ) : null}

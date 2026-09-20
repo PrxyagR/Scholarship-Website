@@ -1,12 +1,12 @@
-import { redirect } from 'next/navigation';
-import { AuthError, AuthShell } from '../components/auth-shell';
 import { SiteFooter, SiteHeader } from '../components/site-chrome';
 import StudentDashboard from '../components/student-dashboard';
-import { opportunities } from '../data/opportunities';
+import { opportunities, type StudyFocus } from '../data/opportunities';
 import {
   getApplicationTracker,
   getRecommendedOpportunities,
   getStudentProfile,
+  type ApplicationTracker,
+  type StudentProfile,
 } from '@/lib/student-tools';
 import { createClient } from '@/lib/supabase/server';
 import { getSavedOpportunityIds } from '@/lib/saved-opportunities';
@@ -16,43 +16,75 @@ export const dynamic = 'force-dynamic';
 
 export default async function DashboardPage() {
   const supabase = await createClient();
-
-  if (!supabase) {
-    return (
-      <AuthShell
-        eyebrow="Student dashboard"
-        title="Your plan is almost here"
-        description="Account services still need to be connected before MaplePath can save your profile and application progress."
-      >
-        <AuthError>Supabase is not configured for this site yet.</AuthError>
-      </AuthShell>
-    );
-  }
-
   const {
     data: { user },
-  } = await supabase.auth.getUser();
+  } = supabase ? await supabase.auth.getUser() : { data: { user: null } };
 
-  if (!user) redirect('/sign-in?message=dashboard-required&next=/dashboard');
-
-  const savedIds = getSavedOpportunityIds(user);
+  const isGuest = !user;
   const catalog = [...opportunities, ...(await getPublishedRoleOpportunities())];
+
+  const profile: StudentProfile = isGuest
+    ? {
+        grade: 11,
+        province: 'Ontario',
+        focuses: ['Computer science', 'Mathematics'] as StudyFocus[],
+      }
+    : getStudentProfile(user);
+
+  const savedIds = isGuest
+    ? [
+        'loran-scholarship',
+        'canadian-computing-competition',
+        'shad-canada',
+        'university-of-toronto-national-scholarship',
+      ]
+    : getSavedOpportunityIds(user);
+
   const savedOpportunities = savedIds
     .map((savedId) => catalog.find((opportunity) => opportunity.id === savedId))
     .filter((opportunity): opportunity is (typeof catalog)[number] => Boolean(opportunity));
-  const profile = getStudentProfile(user);
-  const tracker = getApplicationTracker(user);
+
+  const initialTracker: ApplicationTracker = isGuest
+    ? {
+        'loran-scholarship': {
+          status: 'In progress',
+          note: 'Drafted leadership activity essay. Need school counselor nomination letter by October 5.',
+          updatedAt: '2026-09-20',
+        },
+        'canadian-computing-competition': {
+          status: 'Planning',
+          note: 'Practicing past contest questions from CEMC website.',
+          updatedAt: '2026-09-18',
+        },
+        'shad-canada': {
+          status: 'Submitted',
+          note: 'Application submitted with project portfolio on youth climate action.',
+          updatedAt: '2026-09-15',
+        },
+      }
+    : getApplicationTracker(user);
+
   const recommendations = getRecommendedOpportunities(profile, savedIds, catalog);
 
   return (
     <>
       <SiteHeader />
+      {isGuest && (
+        <div className="bg-[var(--surface-sunken)] border-b border-[var(--border-subtle)] px-4 py-2.5 text-center text-xs font-medium text-[var(--ink-secondary)]">
+          <span className="font-semibold text-[var(--spruce-primary)]">🍁 Interactive Preview:</span>{' '}
+          You are viewing the Student Dashboard with sample tracked applications and draft notes.{' '}
+          <a href="/sign-in" className="font-semibold text-[var(--maple-primary)] underline hover:text-[var(--maple-deep)]">
+            Sign in
+          </a>{' '}
+          to sync your profile across devices.
+        </div>
+      )}
       <StudentDashboard
-        userEmail={user.email ?? 'MaplePath student'}
+        userEmail={user?.email ?? 'Student Guest (Preview)'}
         initialProfile={profile}
         savedIds={savedIds}
         savedOpportunities={savedOpportunities}
-        initialTracker={tracker}
+        initialTracker={initialTracker}
         initialRecommendations={recommendations}
         catalog={catalog}
       />

@@ -10,6 +10,7 @@ import {
 import { typeMeta } from '../../components/opportunity-card';
 import { SaveOpportunityButton } from '../../components/save-opportunity-button';
 import { Eyebrow, SiteFooter, SiteHeader, displayDate } from '../../components/site-chrome';
+import { MapleWatermark, MapleLeafIcon } from '../../components/brand-motif';
 import { getSavedOpportunityState } from '@/lib/saved-opportunities';
 import { getPublishedRoleOpportunities } from '@/lib/role-submissions';
 
@@ -75,8 +76,9 @@ export default async function OpportunityDetailPage({ params }: OpportunityPageP
 
         <div className="detail-layout-grid">
           {/* Main Content */}
-          <div className="detail-main-content">
-            <div className="card-top-row" style={{ justifyContent: 'flex-start', gap: '8px' }}>
+          <div className="detail-main-content relative overflow-hidden">
+            <MapleWatermark className="right-0 top-0 w-80 h-96 text-[var(--spruce-primary)]" opacity={0.04} />
+            <div className="card-top-row relative z-10" style={{ justifyContent: 'flex-start', gap: '8px' }}>
               <span className={`card-type-badge ${meta.badgeClass}`}>
                 <span aria-hidden="true">{meta.icon}</span>
                 {meta.label}
@@ -191,8 +193,8 @@ export default async function OpportunityDetailPage({ params }: OpportunityPageP
                 </div>
               ) : null}
               <div className="sidebar-check-item">
-                <span className="sidebar-check-icon" aria-hidden="true">
-                  ✓
+                <span className="sidebar-check-icon flex items-center justify-center text-[var(--maple-primary)]" aria-hidden="true">
+                  <MapleLeafIcon className="h-3.5 w-3.5" />
                 </span>
                 <div>
                   <strong>Canada Accessible</strong>

@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-html-link-for-pages */
 import { catalogUpdatedAt, opportunities } from '../data/opportunities';
 import { Eyebrow, SiteFooter, SiteHeader, displayDate } from '../components/site-chrome';
+import { MapleWatermark, MapleTreeEmblem } from '../components/brand-motif';
 
 export default function AboutPage() {
   return (
@@ -8,8 +9,9 @@ export default function AboutPage() {
       <SiteHeader />
       <main className="editorial-page-container">
         {/* Hero Banner */}
-        <section className="editorial-hero-banner">
-          <div className="editorial-hero-inner">
+        <section className="editorial-hero-banner relative overflow-hidden">
+          <MapleWatermark className="right-0 top-0 w-96 h-full text-[var(--spruce-primary)]" opacity={0.06} />
+          <div className="editorial-hero-inner relative z-10">
             <Eyebrow>About MaplePath</Eyebrow>
             <h1>Leveling the playing field for Canadian high schoolers.</h1>
             <p style={{ marginTop: '12px', color: 'var(--ink-soft)', fontSize: '16px', maxWidth: '680px' }}>
@@ -36,6 +38,15 @@ export default function AboutPage() {
             </div>
 
             <div className="editorial-stat-card-stack">
+              <div className="editorial-stat-card brand-tree-card" style={{ textAlign: 'center' }}>
+                <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '12px' }}>
+                  <MapleTreeEmblem className="w-32 h-32" />
+                </div>
+                <strong style={{ display: 'block', fontSize: '15px' }}>Rooted Across Canada</strong>
+                <p style={{ marginTop: '6px', fontSize: '13px', color: 'var(--ink-soft)' }}>
+                  Connecting students from small towns in Atlantic Canada to northern territories and major metro hubs coast-to-coast.
+                </p>
+              </div>
               <div className="editorial-stat-card">
                 <strong>100% Free & Open</strong>
                 <p>No paywalls or hidden fees. Anyone can browse the entire directory instantly; an optional account helps us measure reach.</p>

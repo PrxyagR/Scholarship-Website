@@ -7,6 +7,7 @@ import {
 } from '../data/opportunities';
 import { SaveOpportunityButton } from './save-opportunity-button';
 import { displayDate } from './site-chrome';
+import { MapleLeafIcon } from './brand-motif';
 
 export const typeMeta: Record<
   OpportunityType,
@@ -40,7 +41,14 @@ export function OpportunityCard({
           {meta.label}
         </span>
         <div className="card-top-actions">
-          {opportunity.featured && <span className="card-featured-pill">Featured</span>}
+          {opportunity.deadline.kind === 'rolling' ? (
+            <span className="card-urgency-pill urgency-rolling">⚡ Rolling</span>
+          ) : opportunity.deadline.kind === 'cycle' ? (
+            <span className="card-urgency-pill urgency-cycle">🔄 Annual cycle</span>
+          ) : (
+            <span className="card-urgency-pill urgency-open">📅 {opportunity.deadline.label}</span>
+          )}
+          {opportunity.featured && <span className="card-featured-pill">★ Featured</span>}
           <SaveOpportunityButton
             opportunityId={opportunity.id}
             opportunityTitle={opportunity.title}
@@ -60,8 +68,12 @@ export function OpportunityCard({
 
       <div className="card-meta-list">
         <div className="card-meta-item">
-          <span className="card-meta-icon" aria-hidden="true">
-            ⌖
+          <span className="card-meta-icon flex items-center justify-center" aria-hidden="true">
+            {opportunity.locationMode === 'Canada' || opportunity.province === 'National' ? (
+              <MapleLeafIcon className="h-3 w-3 text-[var(--maple-primary)]" />
+            ) : (
+              '⌖'
+            )}
           </span>
           <span>{opportunity.locationLabel}</span>
         </div>
@@ -122,8 +134,9 @@ export function OpportunityCard({
         </a>
       </div>
 
-      <p className="card-verified-line">
-        Verified {displayDate(opportunity.lastVerified)}
+      <p className="card-verified-line flex items-center justify-center gap-1.5">
+        <MapleLeafIcon className="h-3 w-3 text-[var(--spruce-primary)] opacity-75 inline flex-shrink-0" />
+        <span>Verified {displayDate(opportunity.lastVerified)}</span>
       </p>
     </article>
   );

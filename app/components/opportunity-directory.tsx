@@ -29,6 +29,7 @@ import { FilterPanel } from './filters';
 import { OpportunityCard } from './opportunity-card';
 import { OpportunityMap } from './opportunity-map';
 import { displayDate, Eyebrow } from './site-chrome';
+import { MapleWatermark, MapleTreeEmblem, MapleLeafIcon } from './brand-motif';
 
 export default function OpportunityDirectory({
   catalog = opportunities,
@@ -36,18 +37,22 @@ export default function OpportunityDirectory({
   isAuthenticated = false,
   initialTypes = [],
   initialGrades = [],
+  initialProvinces = [],
+  initialFocuses = [],
 }: {
   catalog?: Opportunity[];
   initialSavedIds?: string[];
   isAuthenticated?: boolean;
   initialTypes?: OpportunityType[];
   initialGrades?: number[];
+  initialProvinces?: string[];
+  initialFocuses?: StudyFocus[];
 }) {
   const [query, setQuery] = useState('');
   const [selectedTypes, setSelectedTypes] = useState<OpportunityType[]>(initialTypes);
-  const [selectedProvinces, setSelectedProvinces] = useState<string[]>([]);
+  const [selectedProvinces, setSelectedProvinces] = useState<string[]>(initialProvinces);
   const [selectedGrades, setSelectedGrades] = useState<number[]>(initialGrades);
-  const [selectedFocuses, setSelectedFocuses] = useState<StudyFocus[]>([]);
+  const [selectedFocuses, setSelectedFocuses] = useState<StudyFocus[]>(initialFocuses);
   const [selectedLocations, setSelectedLocations] = useState<LocationMode[]>([]);
   const [selectedCosts, setSelectedCosts] = useState<OpportunityCost[]>([]);
   const [selectedFormats, setSelectedFormats] = useState<OpportunityFormat[]>([]);
@@ -59,6 +64,23 @@ export default function OpportunityDirectory({
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const mobileFilterTriggerRef = useRef<HTMLButtonElement>(null);
   const mobileFilterSheetRef = useRef<HTMLDivElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
+  // Focus search input with '/' or 'Cmd+K' / 'Ctrl+K'
+  useEffect(() => {
+    const handleShortcut = (e: KeyboardEvent) => {
+      const activeTag = document.activeElement?.tagName;
+      if (activeTag === 'INPUT' || activeTag === 'TEXTAREA' || activeTag === 'SELECT') {
+        return;
+      }
+      if (e.key === '/' || ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k')) {
+        e.preventDefault();
+        searchInputRef.current?.focus();
+      }
+    };
+    window.addEventListener('keydown', handleShortcut);
+    return () => window.removeEventListener('keydown', handleShortcut);
+  }, []);
 
   const closeMobileFilters = useCallback(() => {
     setMobileFiltersOpen(false);
@@ -288,8 +310,9 @@ export default function OpportunityDirectory({
   return (
     <main className="directory-page-wrapper">
       {/* Page Header */}
-      <section className="page-header-banner">
-        <div className="page-header-inner">
+      <section className="page-header-banner relative overflow-hidden">
+        <MapleWatermark className="right-0 top-0 w-96 h-full text-[var(--spruce-primary)]" opacity={0.06} />
+        <div className="page-header-inner relative z-10">
           <div>
             <Eyebrow>Opportunity directory</Eyebrow>
             <h1>
@@ -315,9 +338,9 @@ export default function OpportunityDirectory({
       {/* Directory Content Area */}
       <section className="directory-body-wrapper">
         <div className="directory-community-callout">
-          <div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
             <span className="eyebrow">Make the directory more useful</span>
-            <strong>Plan your next step or share a youth role.</strong>
+            <strong style={{ fontSize: '14.5px', color: 'var(--ink)' }}>Plan your next step or share a youth role.</strong>
           </div>
           <div className="directory-community-actions">
             <a className="secondary-button" href="/roadmap">Build a roadmap <span aria-hidden="true">↗</span></a>
@@ -335,17 +358,23 @@ export default function OpportunityDirectory({
             {/* Search Input Bar + Mobile Trigger */}
             <div className="search-filter-bar">
               <label className="search-input-box">
-                <span className="search-icon-decor" aria-hidden="true">
-                  ⌕
+                <span className="search-icon-decor flex items-center justify-center" aria-hidden="true">
+                  <MapleLeafIcon className="h-3.5 w-3.5 text-[var(--maple-primary)]" />
                 </span>
                 <span className="sr-only">Search opportunities</span>
                 <input
+                  ref={searchInputRef}
                   className="search-input-field"
                   type="search"
-                  placeholder="Search by name, organization, or keywords..."
+                  placeholder="Search by name, organization, or keywords... (Press / to search)"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                 />
+                {!query && (
+                  <span className="search-shortcut-hint" aria-hidden="true" title="Press / to search">
+                    /
+                  </span>
+                )}
                 {query && (
                   <button
                     type="button"
@@ -557,7 +586,7 @@ export default function OpportunityDirectory({
                     tabIndex={viewMode === 'list' ? 0 : -1}
                     onClick={() => setViewMode('list')}
                   >
-                    List
+                    <span aria-hidden="true">☰</span> List
                   </button>
                   <button
                     type="button"
@@ -567,7 +596,7 @@ export default function OpportunityDirectory({
                     tabIndex={viewMode === 'map' ? 0 : -1}
                     onClick={() => setViewMode('map')}
                   >
-                    Map
+                    <span aria-hidden="true">🗺</span> Map
                   </button>
                 </div>
               </div>
@@ -590,12 +619,12 @@ export default function OpportunityDirectory({
               </div>
             ) : (
               <div className="empty-directory-box">
-                <span style={{ fontSize: '28px', color: 'var(--maple)', marginBottom: '12px' }}>
-                  ⌕
-                </span>
+                <div className="w-24 h-24 mb-3 flex items-center justify-center">
+                  <MapleTreeEmblem className="w-24 h-24 opacity-80" />
+                </div>
                 <h3>No matching opportunities found</h3>
                 <p>
-                  Try broadening your search term or clearing some of your active filters to see more listings.
+                  Try broadening your search term or clearing some of your active filters to see more listings across Canada.
                 </p>
                 <button
                   type="button"

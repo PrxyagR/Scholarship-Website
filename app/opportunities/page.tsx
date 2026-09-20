@@ -1,6 +1,13 @@
 import OpportunityDirectory from '../components/opportunity-directory';
 import { SiteFooter, SiteHeader } from '../components/site-chrome';
-import { opportunities, supportedOpportunityTypes, type OpportunityType } from '../data/opportunities';
+import {
+  opportunities,
+  supportedOpportunityTypes,
+  supportedProvinces,
+  supportedStudyFocuses,
+  type OpportunityType,
+  type StudyFocus,
+} from '../data/opportunities';
 import { getSavedOpportunityState } from '@/lib/saved-opportunities';
 import { getPublishedRoleOpportunities } from '@/lib/role-submissions';
 
@@ -25,6 +32,12 @@ export default async function OpportunitiesPage({ searchParams }: { searchParams
   const initialGrades = values(query.grade)
     .map(Number)
     .filter((grade) => grades.includes(grade));
+  const initialProvinces = values(query.province).filter((prov) =>
+    (supportedProvinces as readonly string[]).includes(prov),
+  );
+  const initialFocuses = values(query.focus).filter((focus): focus is StudyFocus =>
+    (supportedStudyFocuses as readonly string[]).includes(focus),
+  );
 
   return (
     <>
@@ -35,6 +48,8 @@ export default async function OpportunitiesPage({ searchParams }: { searchParams
         isAuthenticated={Boolean(user)}
         initialTypes={initialTypes}
         initialGrades={initialGrades}
+        initialProvinces={initialProvinces}
+        initialFocuses={initialFocuses}
       />
       <SiteFooter />
     </>

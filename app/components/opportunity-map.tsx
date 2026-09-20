@@ -32,6 +32,14 @@ export function OpportunityMap({ opportunities }: { opportunities: Opportunity[]
       const popupContent = document.createElement('div');
       popupContent.className = 'opportunity-map-popup';
 
+      const typeBadge = document.createElement('span');
+      typeBadge.className = 'card-type-badge';
+      typeBadge.style.fontSize = '10px';
+      typeBadge.style.padding = '1px 6px';
+      typeBadge.style.width = 'fit-content';
+      typeBadge.textContent = opportunity.type;
+      popupContent.appendChild(typeBadge);
+
       const title = document.createElement('strong');
       title.textContent = opportunity.title;
       popupContent.appendChild(title);
@@ -39,6 +47,11 @@ export function OpportunityMap({ opportunities }: { opportunities: Opportunity[]
       const provider = document.createElement('span');
       provider.textContent = opportunity.provider;
       popupContent.appendChild(provider);
+
+      const deadline = document.createElement('small');
+      deadline.style.color = 'var(--ink-muted)';
+      deadline.textContent = `Deadline: ${opportunity.deadline.label}`;
+      popupContent.appendChild(deadline);
 
       const link = document.createElement('a');
       link.href = `/opportunities/${opportunity.id}`;

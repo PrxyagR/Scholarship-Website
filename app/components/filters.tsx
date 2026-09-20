@@ -1,4 +1,5 @@
 import type { Dispatch, SetStateAction } from 'react';
+import { MapleLeafIcon } from './brand-motif';
 import type {
   LocationMode,
   OpportunityCost,
@@ -166,7 +167,10 @@ export function FilterPanel({
   return (
     <div className={`filters-panel-content ${mobile ? 'is-mobile' : ''}`}>
       <div className="filters-header">
-        <h2 className="filters-title">Filter by</h2>
+        <h2 className="filters-title flex items-center gap-1.5">
+          <MapleLeafIcon className="h-3.5 w-3.5 text-[var(--maple-primary)] flex-shrink-0" />
+          <span>Filter by</span>
+        </h2>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           {hasFilters && (
             <button className="reset-button" type="button" onClick={onReset}>

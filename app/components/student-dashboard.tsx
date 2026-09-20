@@ -5,6 +5,7 @@ import Link from 'next/link';
 import type { Opportunity } from '../data/opportunities';
 import { OpportunityCard } from './opportunity-card';
 import { Eyebrow } from './site-chrome';
+import { MapleWatermark, MapleLeafIcon } from './brand-motif';
 import {
   getRecommendedOpportunities,
   studentFocusOptions,
@@ -74,6 +75,12 @@ function recordFor(tracker: ApplicationTracker, opportunityId: string): Applicat
   return tracker[opportunityId] ?? { status: 'Planning', note: '', updatedAt: '' };
 }
 
+function statusClass(status: ApplicationStatus) {
+  if (status === 'Submitted') return 'is-submitted';
+  if (status === 'In progress') return 'is-progress';
+  return 'is-planning';
+}
+
 function ApplicationRow({
   opportunity,
   record,
@@ -92,12 +99,18 @@ function ApplicationRow({
         </h3>
         <p>{opportunity.provider}</p>
         <div className="dashboard-opportunity-meta">
-          <span>{opportunity.deadline.label}</span>
-          <span>{opportunity.locationLabel}</span>
+          <span>◷ {opportunity.deadline.label}</span>
+          <span>⌖ {opportunity.locationLabel}</span>
         </div>
       </div>
       <label className="dashboard-status-field">
-        <span>Status</span>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <span>Status</span>
+          <span className={`status-tag ${statusClass(record.status)}`}>
+            <span className="status-dot-indicator" aria-hidden="true" />
+            {record.status}
+          </span>
+        </div>
         <select
           className="dashboard-select"
           value={record.status}
@@ -109,7 +122,10 @@ function ApplicationRow({
         </select>
       </label>
       <div className="dashboard-note-field">
-        <label htmlFor={`note-${opportunity.id}`}>Private note</label>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <label htmlFor={`note-${opportunity.id}`}>Private note</label>
+          <span style={{ fontSize: '11px', color: 'var(--ink-muted)' }}>{record.note.length}/500</span>
+        </div>
         <textarea
           id={`note-${opportunity.id}`}
           className="dashboard-note-input"
@@ -119,9 +135,14 @@ function ApplicationRow({
           onChange={(event) => onUpdate(opportunity.id, { note: event.target.value }, false)}
           onBlur={(event) => onUpdate(opportunity.id, { note: event.target.value })}
         />
-        <a className="dashboard-inline-link" href={opportunity.applyUrl} target="_blank" rel="noreferrer">
-          Official page ↗
-        </a>
+        <div className="dashboard-note-meta">
+          <a className="dashboard-inline-link" href={opportunity.applyUrl} target="_blank" rel="noreferrer">
+            Official page ↗
+          </a>
+          <Link className="text-link" style={{ fontSize: '11.5px' }} href={`/opportunities/${opportunity.id}`}>
+            Listing details →
+          </Link>
+        </div>
       </div>
     </article>
   );
@@ -219,17 +240,29 @@ export default function StudentDashboard({
 
   return (
     <main className="dashboard-page-wrapper">
-      <section className="dashboard-header">
-        <div>
+      <section className="dashboard-header relative overflow-hidden">
+        <MapleWatermark className="right-0 top-0 w-80 h-full text-[var(--spruce-primary)]" opacity={0.06} />
+        <div className="relative z-10">
           <Eyebrow>Student dashboard</Eyebrow>
           <h1>Build your opportunity plan.</h1>
           <p>
             Welcome, {firstNameFromEmail(userEmail)}. Keep your shortlist, deadlines, and application progress together.
           </p>
         </div>
-        <div className="dashboard-account-chip">
-          <span>Signed in as</span>
-          <strong>{userEmail}</strong>
+        <div className="relative z-10" style={{ display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'flex-end' }}>
+          <div className="dashboard-account-chip">
+            <span>Signed in as</span>
+            <strong>{userEmail}</strong>
+          </div>
+          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+            <span className="card-urgency-pill urgency-open flex items-center gap-1">
+              <MapleLeafIcon className="h-3 w-3 text-[var(--maple-primary)]" />
+              <span>{savedOpportunities.length} Saved</span>
+            </span>
+            <span className="card-urgency-pill urgency-rolling">
+              ◷ {datedSavedCount} Deadlines
+            </span>
+          </div>
         </div>
       </section>
 
