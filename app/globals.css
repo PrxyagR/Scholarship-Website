@@ -2302,6 +2302,60 @@ h1 em, h2 em, h3 em {
   width: 100%;
 }
 
+.opportunity-map .leaflet-container {
+  min-height: 520px;
+  width: 100%;
+  background: #e9efec;
+  font: inherit;
+}
+
+.opportunity-map .leaflet-control-zoom,
+.opportunity-map .leaflet-control-attribution {
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-sm);
+}
+
+.opportunity-map .leaflet-control-zoom a {
+  color: var(--forest);
+}
+
+.opportunity-map .leaflet-control-attribution {
+  padding: 2px 6px;
+  background: rgba(255, 255, 255, 0.88);
+  color: var(--ink-muted);
+  font-size: 10px;
+}
+
+.opportunity-map .leaflet-control-attribution a {
+  color: var(--forest);
+}
+
+.opportunity-map-marker {
+  border: 0;
+  background: transparent;
+}
+
+.opportunity-map-marker span {
+  display: block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid #ffffff;
+  border-radius: 50% 50% 50% 0;
+  background: var(--maple-primary);
+  box-shadow: 0 2px 6px rgba(13, 33, 30, 0.28);
+  transform: rotate(-45deg);
+}
+
+.opportunity-map-marker span::after {
+  display: block;
+  width: 5px;
+  height: 5px;
+  margin: 4px auto 0;
+  border-radius: 50%;
+  background: #ffffff;
+  content: '';
+}
+
 .opportunity-map-note {
   display: flex;
   align-items: center;
@@ -2334,6 +2388,28 @@ h1 em, h2 em, h3 em {
   color: var(--ink);
   text-align: center;
   transform: translate(-50%, -50%);
+}
+
+.opportunity-map-error {
+  position: absolute;
+  inset: 50% auto auto 50%;
+  z-index: 2;
+  display: grid;
+  gap: 5px;
+  width: min(330px, calc(100% - 32px));
+  padding: 16px 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: var(--shadow-sm);
+  color: var(--ink);
+  text-align: center;
+  transform: translate(-50%, -50%);
+}
+
+.opportunity-map-error span {
+  color: var(--ink-muted);
+  font-size: 12px;
 }
 
 .opportunity-map-popup {
