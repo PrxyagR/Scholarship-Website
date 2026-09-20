@@ -25,6 +25,16 @@ const mainLinks = [
     subtitle: 'Track applications, deadlines & recommendations',
   },
   {
+    href: '/roadmap',
+    title: 'My student roadmap',
+    subtitle: 'Turn an interest into a four-step plan',
+  },
+  {
+    href: '/submit-role',
+    title: 'Suggest a youth role',
+    subtitle: 'Send an opportunity for private review',
+  },
+  {
     href: '/about',
     title: 'About MaplePath',
     subtitle: 'Our story, editorial standards & weekly reviews',
@@ -177,6 +187,13 @@ export function MobileMenu({ isAuthenticated = false }: { isAuthenticated?: bool
                   onClick={closeMenu}
                 >
                   Internships
+                </a>
+                <a
+                  href="/opportunities?type=Program"
+                  className="mobile-quick-pill"
+                  onClick={closeMenu}
+                >
+                  Programs
                 </a>
                 <a
                   href="/opportunities?grade=9&grade=10&grade=11&grade=12"

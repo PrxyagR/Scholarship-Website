@@ -64,15 +64,21 @@ export default async function AccountPage({ searchParams }: { searchParams: Sear
       {isAdmin ? (
         <div className="account-admin-note">
           <strong>Project owner tools</strong>
-          <p>View the private count of registered and email-confirmed accounts.</p>
+          <p>View signup metrics and review role submissions before they appear publicly.</p>
           <a className="secondary-button" href="/admin/signups">
             Open signup metrics <span aria-hidden="true">↗</span>
+          </a>
+          <a className="secondary-button" href="/admin/roles">
+            Review role submissions <span aria-hidden="true">↗</span>
           </a>
         </div>
       ) : null}
       <div className="account-actions">
         <Link className="primary-button" href="/dashboard">
           Open student dashboard <span aria-hidden="true">↗</span>
+        </Link>
+        <Link className="primary-button" href="/roadmap">
+          Build my roadmap <span aria-hidden="true">↗</span>
         </Link>
         <Link className="primary-button" href="/opportunities">
           Explore opportunities <span aria-hidden="true">↗</span>

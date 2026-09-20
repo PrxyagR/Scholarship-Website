@@ -6,6 +6,7 @@ import {
   type Opportunity,
   type StudyFocus,
 } from '@/app/data/opportunities';
+import { isSubmittedRoleId } from '@/lib/role-ids';
 
 export const STUDENT_PROFILE_KEY = 'maplepath_student_profile';
 export const APPLICATION_TRACKER_KEY = 'maplepath_application_tracker';
@@ -42,7 +43,7 @@ const emptyProfile: StudentProfile = {
 };
 
 function isKnownOpportunityId(value: string) {
-  return opportunities.some((opportunity) => opportunity.id === value);
+  return opportunities.some((opportunity) => opportunity.id === value) || isSubmittedRoleId(value);
 }
 
 function isStudyFocus(value: unknown): value is StudyFocus {

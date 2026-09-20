@@ -10,6 +10,7 @@ import {
 } from '@/lib/student-tools';
 import { createClient } from '@/lib/supabase/server';
 import { getSavedOpportunityIds } from '@/lib/saved-opportunities';
+import { getPublishedRoleOpportunities } from '@/lib/role-submissions';
 
 export const dynamic = 'force-dynamic';
 
@@ -35,9 +36,10 @@ export default async function DashboardPage() {
   if (!user) redirect('/sign-in?message=dashboard-required&next=/dashboard');
 
   const savedIds = getSavedOpportunityIds(user);
+  const catalog = [...opportunities, ...(await getPublishedRoleOpportunities())];
   const savedOpportunities = savedIds
-    .map((savedId) => opportunities.find((opportunity) => opportunity.id === savedId))
-    .filter((opportunity): opportunity is (typeof opportunities)[number] => Boolean(opportunity));
+    .map((savedId) => catalog.find((opportunity) => opportunity.id === savedId))
+    .filter((opportunity): opportunity is (typeof catalog)[number] => Boolean(opportunity));
   const profile = getStudentProfile(user);
   const tracker = getApplicationTracker(user);
   const recommendations = getRecommendedOpportunities(profile, savedIds);

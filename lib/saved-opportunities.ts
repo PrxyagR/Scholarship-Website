@@ -1,12 +1,16 @@
 import type { User } from '@supabase/supabase-js';
 import { opportunities } from '@/app/data/opportunities';
 import { createClient } from '@/lib/supabase/server';
+import { isSubmittedRoleId } from '@/lib/role-ids';
 
 export const SAVED_OPPORTUNITIES_KEY = 'maplepath_saved_opportunity_ids';
 const MAX_SAVED_OPPORTUNITIES = 250;
 
 function isKnownOpportunityId(value: unknown): value is string {
-  return typeof value === 'string' && opportunities.some((opportunity) => opportunity.id === value);
+  return (
+    typeof value === 'string' &&
+    (opportunities.some((opportunity) => opportunity.id === value) || isSubmittedRoleId(value))
+  );
 }
 
 export function getSavedOpportunityIds(user: User | null | undefined) {

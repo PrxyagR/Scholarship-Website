@@ -1,4 +1,10 @@
-import type { Opportunity, OpportunityType } from '../data/opportunities';
+import {
+  getOpportunityCost,
+  getOpportunityFormat,
+  getOpportunityStatus,
+  type Opportunity,
+  type OpportunityType,
+} from '../data/opportunities';
 import { SaveOpportunityButton } from './save-opportunity-button';
 import { displayDate } from './site-chrome';
 
@@ -9,6 +15,8 @@ export const typeMeta: Record<
   Scholarship: { label: 'Scholarship', badgeClass: 'badge-scholarship', icon: '◎' },
   Competition: { label: 'Competition', badgeClass: 'badge-competition', icon: '✦' },
   Internship: { label: 'Internship', badgeClass: 'badge-internship', icon: '↗' },
+  Program: { label: 'Program', badgeClass: 'badge-program', icon: '▦' },
+  'Youth role': { label: 'Youth role', badgeClass: 'badge-youth-role', icon: '＋' },
 };
 
 export function OpportunityCard({
@@ -67,8 +75,22 @@ export function OpportunityCard({
           <span className="card-meta-icon" aria-hidden="true">
             ◷
           </span>
-          <span>{opportunity.deadline.label}</span>
+          <span>{opportunity.deadline.label} · {getOpportunityStatus(opportunity)}</span>
         </div>
+        <div className="card-meta-item">
+          <span className="card-meta-icon" aria-hidden="true">
+            ◇
+          </span>
+          <span>
+            {getOpportunityCost(opportunity)} · {getOpportunityFormat(opportunity)}
+          </span>
+        </div>
+        {opportunity.travelRequired && (
+          <div className="card-meta-item card-meta-travel">
+            <span className="card-meta-icon" aria-hidden="true">✈</span>
+            <span>Travel may be required</span>
+          </div>
+        )}
       </div>
 
       <p className="card-summary-text">{opportunity.summary}</p>

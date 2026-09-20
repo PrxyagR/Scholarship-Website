@@ -1,11 +1,17 @@
 /* eslint-disable @next/next/no-html-link-for-pages */
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { opportunities } from '../../data/opportunities';
+import {
+  getOpportunityCost,
+  getOpportunityFormat,
+  getOpportunityStatus,
+  opportunities,
+} from '../../data/opportunities';
 import { typeMeta } from '../../components/opportunity-card';
 import { SaveOpportunityButton } from '../../components/save-opportunity-button';
 import { Eyebrow, SiteFooter, SiteHeader, displayDate } from '../../components/site-chrome';
 import { getSavedOpportunityState } from '@/lib/saved-opportunities';
+import { getPublishedRoleOpportunities } from '@/lib/role-submissions';
 
 export const dynamic = 'force-dynamic';
 
@@ -19,7 +25,8 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: OpportunityPageProps): Promise<Metadata> {
   const { id } = await params;
-  const opportunity = opportunities.find((item) => item.id === id);
+  const catalog = [...opportunities, ...(await getPublishedRoleOpportunities())];
+  const opportunity = catalog.find((item) => item.id === id);
 
   if (!opportunity) {
     return {
@@ -49,7 +56,8 @@ export async function generateMetadata({ params }: OpportunityPageProps): Promis
 
 export default async function OpportunityDetailPage({ params }: OpportunityPageProps) {
   const { id } = await params;
-  const opportunity = opportunities.find((item) => item.id === id);
+  const catalog = [...opportunities, ...(await getPublishedRoleOpportunities())];
+  const opportunity = catalog.find((item) => item.id === id);
 
   if (!opportunity) notFound();
 
@@ -112,7 +120,8 @@ export default async function OpportunityDetailPage({ params }: OpportunityPageP
                 <span className="detail-meta-hint">
                   {opportunity.deadline.kind === 'rolling'
                     ? 'Rolling review cycle'
-                    : 'Check official page for exact cutoff'}
+                    : 'Check official page for exact cutoff'}{' '}
+                  · {getOpportunityStatus(opportunity)} · {getOpportunityCost(opportunity)} · {getOpportunityFormat(opportunity)}
                 </span>
               </div>
             </div>
@@ -149,6 +158,11 @@ export default async function OpportunityDetailPage({ params }: OpportunityPageP
               <p className="detail-apply-disclaimer">
                 MaplePath directs you to the official source. Always confirm current rules, deadlines, and registration instructions directly on the host website.
               </p>
+              {opportunity.eligibilityUrl && opportunity.eligibilityUrl !== opportunity.applyUrl ? (
+                <a className="text-link" href={opportunity.eligibilityUrl} target="_blank" rel="noreferrer">
+                  Read official eligibility rules <span aria-hidden="true">↗</span>
+                </a>
+              ) : null}
             </div>
           </div>
 
@@ -167,6 +181,15 @@ export default async function OpportunityDetailPage({ params }: OpportunityPageP
                   <span>Links to verified organizer portal</span>
                 </div>
               </div>
+              {opportunity.travelRequired ? (
+                <div className="sidebar-check-item">
+                  <span className="sidebar-check-icon" aria-hidden="true">✈</span>
+                  <div>
+                    <strong>Travel note</strong>
+                    <span>Travel may be required for a finalist event or placement.</span>
+                  </div>
+                </div>
+              ) : null}
               <div className="sidebar-check-item">
                 <span className="sidebar-check-icon" aria-hidden="true">
                   ✓

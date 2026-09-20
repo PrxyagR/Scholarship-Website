@@ -11,21 +11,33 @@ import {
 } from 'react';
 import {
   catalogUpdatedAt,
+  getOpportunityCost,
+  getOpportunityFormat,
+  getOpportunityStatus,
+  getOrganizerCountry,
   opportunities,
+  type Opportunity,
+  type OpportunityCost,
+  type OpportunityFormat,
   type LocationMode,
+  type OpportunityStatus,
   type OpportunityType,
+  type OrganizerCountry,
   type StudyFocus,
 } from '../data/opportunities';
 import { FilterPanel } from './filters';
 import { OpportunityCard } from './opportunity-card';
+import { OpportunityMap } from './opportunity-map';
 import { displayDate, Eyebrow } from './site-chrome';
 
 export default function OpportunityDirectory({
+  catalog = opportunities,
   initialSavedIds = [],
   isAuthenticated = false,
   initialTypes = [],
   initialGrades = [],
 }: {
+  catalog?: Opportunity[];
   initialSavedIds?: string[];
   isAuthenticated?: boolean;
   initialTypes?: OpportunityType[];
@@ -37,8 +49,13 @@ export default function OpportunityDirectory({
   const [selectedGrades, setSelectedGrades] = useState<number[]>(initialGrades);
   const [selectedFocuses, setSelectedFocuses] = useState<StudyFocus[]>([]);
   const [selectedLocations, setSelectedLocations] = useState<LocationMode[]>([]);
+  const [selectedCosts, setSelectedCosts] = useState<OpportunityCost[]>([]);
+  const [selectedFormats, setSelectedFormats] = useState<OpportunityFormat[]>([]);
+  const [selectedStatuses, setSelectedStatuses] = useState<OpportunityStatus[]>([]);
+  const [selectedOrganizerCountries, setSelectedOrganizerCountries] = useState<OrganizerCountry[]>([]);
   const [selectedCity, setSelectedCity] = useState('');
   const [sortBy, setSortBy] = useState<'recommended' | 'deadline' | 'recent'>('recommended');
+  const [viewMode, setViewMode] = useState<'list' | 'map'>('list');
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const mobileFilterTriggerRef = useRef<HTMLButtonElement>(null);
   const mobileFilterSheetRef = useRef<HTMLDivElement>(null);
@@ -101,13 +118,13 @@ export default function OpportunityDirectory({
   }, [closeMobileFilters, mobileFiltersOpen]);
 
   const cities = useMemo(
-    () => Array.from(new Set(opportunities.map((opportunity) => opportunity.city))).sort(),
-    [],
+    () => Array.from(new Set(catalog.map((opportunity) => opportunity.city))).sort(),
+    [catalog],
   );
 
   const filteredOpportunities = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
-    const matches = opportunities.filter((opportunity) => {
+    const matches = catalog.filter((opportunity) => {
       const searchable = [
         opportunity.title,
         opportunity.provider,
@@ -136,6 +153,15 @@ export default function OpportunityDirectory({
         opportunity.city === selectedCity ||
         opportunity.locationMode === 'Online' ||
         opportunity.province === 'National';
+      const costMatches =
+        !selectedCosts.length || selectedCosts.includes(getOpportunityCost(opportunity));
+      const formatMatches =
+        !selectedFormats.length || selectedFormats.includes(getOpportunityFormat(opportunity));
+      const statusMatches =
+        !selectedStatuses.length || selectedStatuses.includes(getOpportunityStatus(opportunity));
+      const organizerMatches =
+        !selectedOrganizerCountries.length ||
+        selectedOrganizerCountries.includes(getOrganizerCountry(opportunity));
 
       return (
         searchMatches &&
@@ -144,7 +170,11 @@ export default function OpportunityDirectory({
         gradeMatches &&
         focusMatches &&
         locationMatches &&
-        cityMatches
+        cityMatches &&
+        costMatches &&
+        formatMatches &&
+        statusMatches &&
+        organizerMatches
       );
     });
 
@@ -161,8 +191,13 @@ export default function OpportunityDirectory({
     selectedGrades,
     selectedFocuses,
     selectedLocations,
+    selectedCosts,
+    selectedFormats,
+    selectedStatuses,
+    selectedOrganizerCountries,
     selectedCity,
     sortBy,
+    catalog,
   ]);
 
   const activeFiltersCount =
@@ -172,6 +207,10 @@ export default function OpportunityDirectory({
     selectedGrades.length +
     selectedFocuses.length +
     selectedLocations.length +
+    selectedCosts.length +
+    selectedFormats.length +
+    selectedStatuses.length +
+    selectedOrganizerCountries.length +
     (selectedCity ? 1 : 0);
 
   const hasActiveFilters = activeFiltersCount > 0;
@@ -183,6 +222,10 @@ export default function OpportunityDirectory({
     setSelectedGrades([]);
     setSelectedFocuses([]);
     setSelectedLocations([]);
+    setSelectedCosts([]);
+    setSelectedFormats([]);
+    setSelectedStatuses([]);
+    setSelectedOrganizerCountries([]);
     setSelectedCity('');
   };
 
@@ -197,6 +240,14 @@ export default function OpportunityDirectory({
     setSelectedFocuses,
     selectedLocations,
     setSelectedLocations,
+    selectedCosts,
+    setSelectedCosts,
+    selectedFormats,
+    setSelectedFormats,
+    selectedStatuses,
+    setSelectedStatuses,
+    selectedOrganizerCountries,
+    setSelectedOrganizerCountries,
     onReset: resetFilters,
     totalCount: filteredOpportunities.length,
   } satisfies {
@@ -210,6 +261,14 @@ export default function OpportunityDirectory({
     setSelectedFocuses: Dispatch<SetStateAction<StudyFocus[]>>;
     selectedLocations: LocationMode[];
     setSelectedLocations: Dispatch<SetStateAction<LocationMode[]>>;
+    selectedCosts: OpportunityCost[];
+    setSelectedCosts: Dispatch<SetStateAction<OpportunityCost[]>>;
+    selectedFormats: OpportunityFormat[];
+    setSelectedFormats: Dispatch<SetStateAction<OpportunityFormat[]>>;
+    selectedStatuses: OpportunityStatus[];
+    setSelectedStatuses: Dispatch<SetStateAction<OpportunityStatus[]>>;
+    selectedOrganizerCountries: OrganizerCountry[];
+    setSelectedOrganizerCountries: Dispatch<SetStateAction<OrganizerCountry[]>>;
     onReset: () => void;
     totalCount?: number;
   };
@@ -225,12 +284,12 @@ export default function OpportunityDirectory({
               Explore opportunities for <em>Canadian students</em>
             </h1>
             <p style={{ marginTop: '10px', color: 'var(--ink-soft)', fontSize: '15px' }}>
-              Filter by grade, study focus, province, and opportunity type to find programs verified for high school students.
+              Filter by grade, study focus, location, format, cost, and availability to find verified options for high school students.
             </p>
           </div>
           <div className="page-header-aside">
             <span className="page-header-count">
-              {opportunities.length}
+              {catalog.length}
               <small>+</small>
             </span>
             <span>Curated listings</span>
@@ -243,6 +302,16 @@ export default function OpportunityDirectory({
 
       {/* Directory Content Area */}
       <section className="directory-body-wrapper">
+        <div className="directory-community-callout">
+          <div>
+            <span className="eyebrow">Make the directory more useful</span>
+            <strong>Plan your next step or share a youth role.</strong>
+          </div>
+          <div className="directory-community-actions">
+            <a className="secondary-button" href="/roadmap">Build a roadmap <span aria-hidden="true">↗</span></a>
+            <a className="text-link" href="/submit-role">Suggest a role <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
         <div className="directory-layout-grid">
           {/* Desktop Filter Sidebar */}
           <aside className="desktop-filters-sidebar">
@@ -351,6 +420,56 @@ export default function OpportunityDirectory({
                     </button>
                   </span>
                 ))}
+                {selectedCosts.map((cost) => (
+                  <span className="active-filter-tag" key={cost}>
+                    {cost}
+                    <button
+                      type="button"
+                      onClick={() => setSelectedCosts((prev) => prev.filter((item) => item !== cost))}
+                      aria-label={`Remove ${cost} cost filter`}
+                    >
+                      ×
+                    </button>
+                  </span>
+                ))}
+                {selectedFormats.map((format) => (
+                  <span className="active-filter-tag" key={format}>
+                    {format}
+                    <button
+                      type="button"
+                      onClick={() => setSelectedFormats((prev) => prev.filter((item) => item !== format))}
+                      aria-label={`Remove ${format} format filter`}
+                    >
+                      ×
+                    </button>
+                  </span>
+                ))}
+                {selectedStatuses.map((status) => (
+                  <span className="active-filter-tag" key={status}>
+                    {status}
+                    <button
+                      type="button"
+                      onClick={() => setSelectedStatuses((prev) => prev.filter((item) => item !== status))}
+                      aria-label={`Remove ${status} availability filter`}
+                    >
+                      ×
+                    </button>
+                  </span>
+                ))}
+                {selectedOrganizerCountries.map((country) => (
+                  <span className="active-filter-tag" key={country}>
+                    {country}
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setSelectedOrganizerCountries((prev) => prev.filter((item) => item !== country))
+                      }
+                      aria-label={`Remove ${country} organizer filter`}
+                    >
+                      ×
+                    </button>
+                  </span>
+                ))}
                 {selectedProvinces.map((prov) => (
                   <span className="active-filter-tag" key={prov}>
                     {prov}
@@ -415,11 +534,32 @@ export default function OpportunityDirectory({
                     <option value="recent">Recently checked</option>
                   </select>
                 </label>
+
+                <div className="directory-view-toggle" role="group" aria-label="Choose catalog view">
+                  <button
+                    type="button"
+                    className={viewMode === 'list' ? 'is-active' : ''}
+                    aria-pressed={viewMode === 'list'}
+                    onClick={() => setViewMode('list')}
+                  >
+                    List
+                  </button>
+                  <button
+                    type="button"
+                    className={viewMode === 'map' ? 'is-active' : ''}
+                    aria-pressed={viewMode === 'map'}
+                    onClick={() => setViewMode('map')}
+                  >
+                    Map
+                  </button>
+                </div>
               </div>
             </div>
 
             {/* Cards Grid or Empty State */}
-            {filteredOpportunities.length > 0 ? (
+            {viewMode === 'map' ? (
+              <OpportunityMap opportunities={filteredOpportunities} />
+            ) : filteredOpportunities.length > 0 ? (
               <div className="opportunities-grid">
                 {filteredOpportunities.map((opportunity) => (
                   <OpportunityCard

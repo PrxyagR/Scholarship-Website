@@ -5,6 +5,7 @@ import { OpportunityCard } from '../components/opportunity-card';
 import { Eyebrow, SiteFooter, SiteHeader } from '../components/site-chrome';
 import { opportunities } from '../data/opportunities';
 import { getSavedOpportunityState } from '@/lib/saved-opportunities';
+import { getPublishedRoleOpportunities } from '@/lib/role-submissions';
 import { isSupabaseConfigured } from '@/lib/supabase/config';
 
 export const dynamic = 'force-dynamic';
@@ -31,9 +32,10 @@ export default async function SavedOpportunitiesPage() {
     redirect('/sign-in?message=saved-required&next=/saved');
   }
 
+  const catalog = [...opportunities, ...(await getPublishedRoleOpportunities())];
   const savedOpportunities = savedIds
-    .map((savedId) => opportunities.find((opportunity) => opportunity.id === savedId))
-    .filter((opportunity): opportunity is (typeof opportunities)[number] => Boolean(opportunity));
+    .map((savedId) => catalog.find((opportunity) => opportunity.id === savedId))
+    .filter((opportunity): opportunity is (typeof catalog)[number] => Boolean(opportunity));
 
   return (
     <>

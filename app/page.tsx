@@ -66,6 +66,7 @@ export default async function Home() {
   const scholarshipCount = opportunities.filter((o) => o.type === 'Scholarship').length;
   const competitionCount = opportunities.filter((o) => o.type === 'Competition').length;
   const internshipCount = opportunities.filter((o) => o.type === 'Internship').length;
+  const programCount = opportunities.filter((o) => o.type === 'Program').length;
 
   return (
     <main>
@@ -77,10 +78,10 @@ export default async function Home() {
           <div className="hero-copy">
             <Eyebrow>Free Canadian student directory</Eyebrow>
             <h1>
-              Find scholarships, internships & competitions in Canada.
+              Find scholarships, internships, competitions & programs in Canada.
             </h1>
             <p className="hero-description">
-              MaplePath gathers vetted high-school opportunities into one simple, searchable catalog. Filter by province, grade, study focus, and access mode to find your next step.
+              MaplePath gathers vetted high-school opportunities into one simple, searchable catalog. Filter by province, grade, study focus, format, cost, and access mode to find your next step.
             </p>
             <div className="hero-actions">
               <a className="primary-button" href="/opportunities">
@@ -116,8 +117,8 @@ export default async function Home() {
                 <span className="hero-stat-label">Scholarships</span>
               </div>
               <div className="hero-stat-item">
-                <span className="hero-stat-number">{competitionCount + internshipCount}</span>
-                <span className="hero-stat-label">Contests & Interns</span>
+                <span className="hero-stat-number">{competitionCount + internshipCount + programCount}</span>
+                <span className="hero-stat-label">Contests, interns & programs</span>
               </div>
             </div>
             <div className="hero-card-footer">

@@ -1,4 +1,9 @@
-export type OpportunityType = 'Internship' | 'Competition' | 'Scholarship';
+export type OpportunityType =
+  | 'Internship'
+  | 'Competition'
+  | 'Scholarship'
+  | 'Program'
+  | 'Youth role';
 
 export type StudyFocus =
   | 'Biology & health'
@@ -12,6 +17,16 @@ export type StudyFocus =
   | 'Any field';
 
 export type LocationMode = 'Canada' | 'Online' | 'Worldwide';
+
+export type OpportunityFormat = 'Online' | 'In person' | 'Hybrid';
+export type OpportunityCost = 'Free' | 'Paid' | 'Varies';
+export type OrganizerCountry = 'Canada' | 'United States' | 'International';
+export type OpportunityStatus = 'Open' | 'Rolling' | 'Next cycle';
+
+export type OpportunityCoordinates = {
+  lat: number;
+  lng: number;
+};
 
 export type DeadlineInfo = {
   kind: 'date' | 'rolling' | 'cycle';
@@ -35,10 +50,16 @@ export type Opportunity = {
   deadline: DeadlineInfo;
   applyUrl: string;
   lastVerified: string;
+  cost?: OpportunityCost;
+  format?: OpportunityFormat;
+  organizerCountry?: OrganizerCountry;
+  eligibilityUrl?: string;
+  travelRequired?: boolean;
+  coordinates?: OpportunityCoordinates;
   featured?: boolean;
 };
 
-export const catalogUpdatedAt = '2026-08-29';
+export const catalogUpdatedAt = '2026-09-20';
 
 export const supportedProvinces = [
   'National',
@@ -71,9 +92,72 @@ export const supportedStudyFocuses: StudyFocus[] = [
   'Any field',
 ];
 
+export const supportedOpportunityTypes: OpportunityType[] = [
+  'Scholarship',
+  'Competition',
+  'Internship',
+  'Program',
+  'Youth role',
+];
+
+export const supportedOpportunityFormats: OpportunityFormat[] = ['Online', 'In person', 'Hybrid'];
+export const supportedOpportunityCosts: OpportunityCost[] = ['Free', 'Paid', 'Varies'];
+export const supportedOrganizerCountries: OrganizerCountry[] = [
+  'Canada',
+  'United States',
+  'International',
+];
+
 const annual = (label: string): DeadlineInfo => ({ kind: 'cycle', label });
 const rolling = (label: string): DeadlineInfo => ({ kind: 'rolling', label });
 const dated = (date: string, label: string): DeadlineInfo => ({ kind: 'date', date, label });
+
+export function getOpportunityStatus(opportunity: Opportunity): OpportunityStatus {
+  if (opportunity.deadline.kind === 'rolling') return 'Rolling';
+  if (opportunity.deadline.kind === 'cycle') return 'Next cycle';
+  return 'Open';
+}
+
+export function getOpportunityCost(opportunity: Opportunity): OpportunityCost {
+  return opportunity.cost ?? 'Varies';
+}
+
+export function getOpportunityFormat(opportunity: Opportunity): OpportunityFormat {
+  return opportunity.format ?? (opportunity.locationMode === 'Online' ? 'Online' : 'In person');
+}
+
+export function getOrganizerCountry(opportunity: Opportunity): OrganizerCountry {
+  return (
+    opportunity.organizerCountry ??
+    (opportunity.locationMode === 'Canada'
+      ? 'Canada'
+      : opportunity.locationMode === 'Worldwide'
+      ? 'International'
+      : 'Canada')
+  );
+}
+
+const cityCoordinates: Record<string, OpportunityCoordinates> = {
+  Calgary: { lat: 51.0447, lng: -114.0719 },
+  Edmonton: { lat: 53.5461, lng: -113.4938 },
+  Halifax: { lat: 44.6488, lng: -63.5752 },
+  Montreal: { lat: 45.5019, lng: -73.5674 },
+  Ottawa: { lat: 45.4215, lng: -75.6972 },
+  Toronto: { lat: 43.6532, lng: -79.3832 },
+  Vancouver: { lat: 49.2827, lng: -123.1207 },
+  Winnipeg: { lat: 49.8951, lng: -97.1384 },
+  Waterloo: { lat: 43.4643, lng: -80.5204 },
+  Boston: { lat: 42.3601, lng: -71.0589 },
+  Cambridge: { lat: 42.3736, lng: -71.1097 },
+  Newark: { lat: 39.6837, lng: -75.7497 },
+  Washington: { lat: 38.9072, lng: -77.0369 },
+  Rochester: { lat: 43.1566, lng: -77.6088 },
+};
+
+export function getOpportunityCoordinates(opportunity: Opportunity) {
+  if (opportunity.coordinates) return opportunity.coordinates;
+  return Object.entries(cityCoordinates).find(([city]) => opportunity.city.includes(city))?.[1];
+}
 
 const makeOpportunity = (opportunity: Omit<Opportunity, 'lastVerified'>): Opportunity => ({
   ...opportunity,
@@ -4082,6 +4166,168 @@ export const opportunities: Opportunity[] = [
     locationLabel: 'Hospital observerships in Montreal',
     deadline: rolling('Applications depend on observership availability and hospital requirements'),
     applyUrl: 'https://muhc.ca/internships/observerships',
+  }),
+  makeOpportunity({
+    id: 'shad-canada-2027',
+    title: 'Shad Canada 2027',
+    provider: 'Shad Canada',
+    type: 'Program',
+    summary: 'A national STEAM, entrepreneurship, and leadership experience with live-in campus and virtual program formats for curious Canadian high-school students.',
+    eligibility: 'Students currently completing Grade 10 or 11 (Secondary IV or V in Quebec) may apply directly. The 2027 application includes live-in, virtual, and specialized program pathways with financial assistance available.',
+    grades: [10, 11],
+    studyFocus: ['Engineering', 'Computer science', 'Business & finance', 'Biology & health', 'Any field'],
+    province: 'National',
+    city: 'Multiple Canadian campuses',
+    locationMode: 'Canada',
+    locationLabel: 'Live-in campuses across Canada or virtual from Canada',
+    deadline: dated('2027-01-06', 'Final application deadline · January 6, 2027'),
+    applyUrl: 'https://www.shad.ca/apply/',
+    eligibilityUrl: 'https://www.shad.ca/participate/',
+    cost: 'Varies',
+    format: 'Hybrid',
+    organizerCountry: 'Canada',
+    travelRequired: true,
+  }),
+  makeOpportunity({
+    id: 'actua-national-youth-stem-programs',
+    title: 'Actua National Youth STEM Programs',
+    provider: 'Actua',
+    type: 'Program',
+    summary: 'A national network of hands-on STEM programs, camps, workshops, and community experiences, including focused programs for Indigenous youth, girls and gender-diverse youth, Black youth, northern youth, and youth with disabilities.',
+    eligibility: 'Program availability, age range, delivery format, and registration steps vary by Actua member and community. Use the official directory to find a current program near you.',
+    grades: [9, 10, 11, 12],
+    studyFocus: ['Biology & health', 'Computer science', 'Engineering', 'Environment', 'Mathematics', 'Social impact'],
+    province: 'National',
+    city: 'Multiple Canadian communities',
+    locationMode: 'Canada',
+    locationLabel: 'Find a local or community-based Actua program',
+    deadline: rolling('Program dates and registration windows vary by community'),
+    applyUrl: 'https://actua.ca/programs',
+    cost: 'Varies',
+    format: 'Hybrid',
+    organizerCountry: 'Canada',
+  }),
+  makeOpportunity({
+    id: 'canada-learning-code-teens',
+    title: 'Teens Learning Code',
+    provider: 'Canada Learning Code',
+    type: 'Program',
+    summary: 'Hands-on coding workshops, meetups, industry events, and hackathon-style experiences designed to help teens turn ideas into technology projects.',
+    eligibility: 'Youth ages 13–17, with many experiences designed for female-identified, trans, and non-binary youth. Current locations, formats, and registration availability vary by event.',
+    grades: [9, 10, 11, 12],
+    studyFocus: ['Computer science', 'Arts & design', 'Business & finance'],
+    province: 'National',
+    city: 'Multiple Canadian cities and online',
+    locationMode: 'Canada',
+    locationLabel: 'Low-to-no-cost online and in-person learning experiences',
+    deadline: rolling('Workshops and events open throughout the year'),
+    applyUrl: 'https://www.canadalearningcode.ca/experiences/?program=teens_learning_code',
+    eligibilityUrl: 'https://www.canadalearningcode.ca/training/programs/',
+    cost: 'Varies',
+    format: 'Hybrid',
+    organizerCountry: 'Canada',
+  }),
+  makeOpportunity({
+    id: 'hir-academic-writing-contest',
+    title: 'Harvard International Review Academic Writing Contest',
+    provider: 'Harvard International Review',
+    type: 'Competition',
+    summary: 'An international writing contest where high-school students analyze a current issue in international affairs and may advance to a virtual defense day.',
+    eligibility: 'Students in Grades 9–12 outside the United States may enter in English; review the current themes, word limit, AI policy, fee, and submission cycle before registering.',
+    grades: [9, 10, 11, 12],
+    studyFocus: ['Social impact', 'Arts & design', 'Business & finance', 'Computer science'],
+    province: 'Online / worldwide',
+    city: 'Online',
+    locationMode: 'Worldwide',
+    locationLabel: 'Virtual contest open to Canadian students',
+    deadline: dated('2027-01-02', 'Fall / winter 2026 article deadline · January 2, 2027'),
+    applyUrl: 'https://hir.harvard.edu/contest/',
+    eligibilityUrl: 'https://hir.harvard.edu/contest/',
+    cost: 'Paid',
+    format: 'Online',
+    organizerCountry: 'United States',
+  }),
+  makeOpportunity({
+    id: 'american-computer-science-league',
+    title: 'American Computer Science League',
+    provider: 'American Computer Science League',
+    type: 'Competition',
+    summary: 'A school and organization based computer science contest with four online season rounds, programming problems, study materials, and an online final.',
+    eligibility: 'Pre-college schools, organizations, and local groups worldwide can register teams; Canadian students participate through an advisor or approved organizer.',
+    grades: [9, 10, 11, 12],
+    studyFocus: ['Computer science', 'Mathematics'],
+    province: 'Online / worldwide',
+    city: 'Online',
+    locationMode: 'Worldwide',
+    locationLabel: 'Online contests for Canadian school teams',
+    deadline: annual('2026–27 registration opened September 1 · four-contest season'),
+    applyUrl: 'https://www.acsl.org/',
+    eligibilityUrl: 'https://www.acsl.org/get-started',
+    cost: 'Paid',
+    format: 'Online',
+    organizerCountry: 'United States',
+  }),
+  makeOpportunity({
+    id: 'himcm-mathematical-modeling',
+    title: 'HiMCM High School Mathematical Contest in Modeling',
+    provider: 'COMAP',
+    type: 'Competition',
+    summary: 'An international team contest where high-school students use mathematics to model a real-world problem and communicate their solution in writing.',
+    eligibility: 'Teams of up to four high-school or younger students from around the world, working with an advisor under the current contest rules.',
+    grades: [9, 10, 11, 12],
+    studyFocus: ['Mathematics', 'Computer science', 'Engineering', 'Environment'],
+    province: 'Online / worldwide',
+    city: 'Online',
+    locationMode: 'Worldwide',
+    locationLabel: 'International online modeling contest',
+    deadline: dated('2026-11-04', 'November 4–17, 2026 contest window'),
+    applyUrl: 'https://www.contest.comap.com/highschool/contests/himcm/index.html',
+    eligibilityUrl: 'https://contest.comap.com/highschool/contests/himcm/instructions.html',
+    cost: 'Paid',
+    format: 'Online',
+    organizerCountry: 'United States',
+  }),
+  makeOpportunity({
+    id: 'international-space-settlement-design-competition',
+    title: 'International Space Settlement Design Competition',
+    provider: 'National Space Society',
+    type: 'Competition',
+    summary: 'A global team design competition where students create a detailed proposal for a large human settlement in space.',
+    eligibility: 'High-school students worldwide can form teams and submit a space-settlement design through regional or international pathways; check the current rules and schedule.',
+    grades: [9, 10, 11, 12],
+    studyFocus: ['Engineering', 'Computer science', 'Mathematics', 'Environment'],
+    province: 'Online / worldwide',
+    city: 'Online / United States finals',
+    locationMode: 'Worldwide',
+    locationLabel: 'Global team design competition',
+    deadline: annual('Annual regional and international cycle'),
+    applyUrl: 'https://space.nss.org/issdc/',
+    eligibilityUrl: 'https://space.nss.org/issdc/',
+    cost: 'Free',
+    format: 'Hybrid',
+    organizerCountry: 'United States',
+    travelRequired: true,
+  }),
+  makeOpportunity({
+    id: 'genius-olympiad',
+    title: 'GENIUS Olympiad',
+    provider: 'GENIUS Olympiad at SUNY Oswego',
+    type: 'Competition',
+    summary: 'An international high-school competition focused on environmental issues, with categories including science, visual and performing arts, business, writing, and robotics.',
+    eligibility: 'High-school students from around the world submit an original project through an eligible school or mentor; selected finalists attend the New York event.',
+    grades: [9, 10, 11, 12],
+    studyFocus: ['Environment', 'Biology & health', 'Engineering', 'Arts & design', 'Business & finance'],
+    province: 'Online / worldwide',
+    city: 'Online / Oswego, New York',
+    locationMode: 'Worldwide',
+    locationLabel: 'Global submission with New York finals',
+    deadline: annual('Annual winter submission cycle'),
+    applyUrl: 'https://geniusolympiad.org/',
+    eligibilityUrl: 'https://geniusolympiad.org/',
+    cost: 'Varies',
+    format: 'Hybrid',
+    organizerCountry: 'United States',
+    travelRequired: true,
   }),
 ];
 

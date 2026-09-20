@@ -112,6 +112,7 @@ export async function SiteHeader() {
         <nav className="desktop-nav" aria-label="Primary navigation">
           <a href="/opportunities">Explore catalog</a>
           <a href="/dashboard">My dashboard</a>
+          <a href="/roadmap">Roadmap</a>
           <a href="/saved">Saved</a>
           <a href="/how-it-works">How it works</a>
           <a href="/about">About</a>
@@ -146,6 +147,7 @@ export function SiteFooter() {
         <div style={{ display: 'flex', gap: '16px' }}>
           <a href="/opportunities">Directory</a>
           <a href="/dashboard">Dashboard</a>
+          <a href="/roadmap">Roadmap</a>
           <a href="/saved">Saved</a>
           <a href="/how-it-works">How it works</a>
           <a href="/about">About</a>

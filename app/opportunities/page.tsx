@@ -1,12 +1,13 @@
 import OpportunityDirectory from '../components/opportunity-directory';
 import { SiteFooter, SiteHeader } from '../components/site-chrome';
-import { type OpportunityType } from '../data/opportunities';
+import { opportunities, supportedOpportunityTypes, type OpportunityType } from '../data/opportunities';
 import { getSavedOpportunityState } from '@/lib/saved-opportunities';
+import { getPublishedRoleOpportunities } from '@/lib/role-submissions';
 
 export const dynamic = 'force-dynamic';
 
 type SearchParams = Promise<Record<string, string | string[] | undefined>>;
-const opportunityTypes: OpportunityType[] = ['Scholarship', 'Competition', 'Internship'];
+const opportunityTypes: OpportunityType[] = supportedOpportunityTypes;
 const grades = [9, 10, 11, 12];
 
 function values(value: string | string[] | undefined) {
@@ -16,6 +17,8 @@ function values(value: string | string[] | undefined) {
 export default async function OpportunitiesPage({ searchParams }: { searchParams: SearchParams }) {
   const query = await searchParams;
   const { user, savedIds } = await getSavedOpportunityState();
+  const publishedRoles = await getPublishedRoleOpportunities();
+  const catalog = [...opportunities, ...publishedRoles];
   const initialTypes = values(query.type).filter((value): value is OpportunityType =>
     opportunityTypes.includes(value as OpportunityType),
   );
@@ -27,6 +30,7 @@ export default async function OpportunitiesPage({ searchParams }: { searchParams
     <>
       <SiteHeader />
       <OpportunityDirectory
+        catalog={catalog}
         initialSavedIds={savedIds}
         isAuthenticated={Boolean(user)}
         initialTypes={initialTypes}

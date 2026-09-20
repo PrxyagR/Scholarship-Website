@@ -1,7 +1,21 @@
 import type { Dispatch, SetStateAction } from 'react';
-import type { LocationMode, OpportunityType, StudyFocus } from '../data/opportunities';
+import type {
+  LocationMode,
+  OpportunityCost,
+  OpportunityFormat,
+  OpportunityStatus,
+  OpportunityType,
+  OrganizerCountry,
+  StudyFocus,
+} from '../data/opportunities';
 
-export const typeOptions: OpportunityType[] = ['Scholarship', 'Competition', 'Internship'];
+export const typeOptions: OpportunityType[] = [
+  'Scholarship',
+  'Competition',
+  'Internship',
+  'Program',
+  'Youth role',
+];
 export const gradeOptions = [9, 10, 11, 12];
 export const provinceOptions = [
   'National',
@@ -22,6 +36,14 @@ export const provinceOptions = [
   'Yukon',
 ];
 export const accessOptions: LocationMode[] = ['Canada', 'Online', 'Worldwide'];
+export const costOptions: OpportunityCost[] = ['Free', 'Paid', 'Varies'];
+export const formatOptions: OpportunityFormat[] = ['Online', 'In person', 'Hybrid'];
+export const statusOptions: OpportunityStatus[] = ['Open', 'Rolling', 'Next cycle'];
+export const organizerCountryOptions: OrganizerCountry[] = [
+  'Canada',
+  'United States',
+  'International',
+];
 export const focusOptions: StudyFocus[] = [
   'Biology & health',
   'Business & finance',
@@ -85,6 +107,14 @@ export function FilterPanel({
   setSelectedFocuses,
   selectedLocations,
   setSelectedLocations,
+  selectedCosts,
+  setSelectedCosts,
+  selectedFormats,
+  setSelectedFormats,
+  selectedStatuses,
+  setSelectedStatuses,
+  selectedOrganizerCountries,
+  setSelectedOrganizerCountries,
   onReset,
   onClose,
   mobile = false,
@@ -100,6 +130,14 @@ export function FilterPanel({
   setSelectedFocuses: Dispatch<SetStateAction<StudyFocus[]>>;
   selectedLocations: LocationMode[];
   setSelectedLocations: Dispatch<SetStateAction<LocationMode[]>>;
+  selectedCosts: OpportunityCost[];
+  setSelectedCosts: Dispatch<SetStateAction<OpportunityCost[]>>;
+  selectedFormats: OpportunityFormat[];
+  setSelectedFormats: Dispatch<SetStateAction<OpportunityFormat[]>>;
+  selectedStatuses: OpportunityStatus[];
+  setSelectedStatuses: Dispatch<SetStateAction<OpportunityStatus[]>>;
+  selectedOrganizerCountries: OrganizerCountry[];
+  setSelectedOrganizerCountries: Dispatch<SetStateAction<OrganizerCountry[]>>;
   onReset: () => void;
   onClose?: () => void;
   mobile?: boolean;
@@ -116,7 +154,11 @@ export function FilterPanel({
     selectedProvinces.length > 0 ||
     selectedGrades.length > 0 ||
     selectedFocuses.length > 0 ||
-    selectedLocations.length > 0;
+    selectedLocations.length > 0 ||
+    selectedCosts.length > 0 ||
+    selectedFormats.length > 0 ||
+    selectedStatuses.length > 0 ||
+    selectedOrganizerCountries.length > 0;
 
   return (
     <div className={`filters-panel-content ${mobile ? 'is-mobile' : ''}`}>
@@ -175,6 +217,34 @@ export function FilterPanel({
             ? 'Online only'
             : 'Worldwide (Canada eligible)'
         }
+        />
+
+      <FilterGroup
+        title="Availability"
+        options={statusOptions}
+        selected={selectedStatuses}
+        onToggle={(value) => toggle(value as OpportunityStatus, setSelectedStatuses)}
+      />
+
+      <FilterGroup
+        title="Format"
+        options={formatOptions}
+        selected={selectedFormats}
+        onToggle={(value) => toggle(value as OpportunityFormat, setSelectedFormats)}
+      />
+
+      <FilterGroup
+        title="Cost"
+        options={costOptions}
+        selected={selectedCosts}
+        onToggle={(value) => toggle(value as OpportunityCost, setSelectedCosts)}
+      />
+
+      <FilterGroup
+        title="Organizer"
+        options={organizerCountryOptions}
+        selected={selectedOrganizerCountries}
+        onToggle={(value) => toggle(value as OrganizerCountry, setSelectedOrganizerCountries)}
       />
 
       <FilterGroup
