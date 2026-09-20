@@ -4290,10 +4290,6 @@ h1 em, h2 em, h3 em {
 }
 
 @media (max-width: 768px) {
-  body {
-    padding-bottom: calc(84px + env(safe-area-inset-bottom, 0px));
-  }
-
   .desktop-nav,
   .header-button,
   .header-auth-link {
@@ -4477,13 +4473,11 @@ h1 em, h2 em, h3 em {
   font-family: "Charter", "Bitstream Charter", "Sitka Text", Cambria, Georgia, serif;
 }
 
-/* Floating Dock & Mobile Bottom Spacing */
-main {
-  padding-bottom: 6rem;
-}
+/* Keep the fixed mobile dock from covering the footer without creating a
+   second blank strip below the entire page. */
 @media (max-width: 768px) {
-  main {
-    padding-bottom: 5.5rem;
+  .site-footer {
+    padding-bottom: calc(16px + 45px + env(safe-area-inset-bottom, 0px));
   }
 }
 
