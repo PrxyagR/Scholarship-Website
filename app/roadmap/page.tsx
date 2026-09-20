@@ -2,10 +2,12 @@ import { redirect } from 'next/navigation';
 import { AuthError, AuthShell } from '../components/auth-shell';
 import RoadmapBuilder from '../components/roadmap-builder';
 import { SiteFooter, SiteHeader } from '../components/site-chrome';
+import { opportunities } from '../data/opportunities';
 import { getSavedOpportunityIds } from '@/lib/saved-opportunities';
 import { getRoadmapAnswers } from '@/lib/roadmap';
 import { getRecommendedOpportunities, getStudentProfile } from '@/lib/student-tools';
 import { createClient } from '@/lib/supabase/server';
+import { getPublishedRoleOpportunities } from '@/lib/role-submissions';
 
 export const dynamic = 'force-dynamic';
 
@@ -31,7 +33,8 @@ export default async function RoadmapPage() {
 
   const profile = getStudentProfile(user);
   const savedIds = getSavedOpportunityIds(user);
-  const recommendations = getRecommendedOpportunities(profile, savedIds);
+  const catalog = [...opportunities, ...(await getPublishedRoleOpportunities())];
+  const recommendations = getRecommendedOpportunities(profile, savedIds, catalog);
 
   return (
     <>

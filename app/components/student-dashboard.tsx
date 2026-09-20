@@ -134,6 +134,7 @@ export default function StudentDashboard({
   savedOpportunities,
   initialTracker,
   initialRecommendations,
+  catalog,
 }: {
   userEmail: string;
   initialProfile: StudentProfile;
@@ -141,6 +142,7 @@ export default function StudentDashboard({
   savedOpportunities: Opportunity[];
   initialTracker: ApplicationTracker;
   initialRecommendations: Opportunity[];
+  catalog: Opportunity[];
 }) {
   const [profile, setProfile] = useState(initialProfile);
   const [tracker, setTracker] = useState(initialTracker);
@@ -149,8 +151,8 @@ export default function StudentDashboard({
   const [trackerMessage, setTrackerMessage] = useState('');
 
   const recommendations = useMemo(
-    () => getRecommendedOpportunities(profile, savedIds),
-    [profile, savedIds],
+    () => getRecommendedOpportunities(profile, savedIds, catalog),
+    [profile, savedIds, catalog],
   );
   const visibleRecommendations = recommendations.length ? recommendations : initialRecommendations;
   const datedSavedCount = savedOpportunities.filter((opportunity) => opportunity.deadline.date).length;
@@ -167,6 +169,11 @@ export default function StudentDashboard({
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ profile }),
       });
+      const payload = (await response.json().catch(() => null)) as { redirectTo?: unknown } | null;
+      if (response.status === 401 && typeof payload?.redirectTo === 'string') {
+        window.location.assign(payload.redirectTo);
+        return;
+      }
       if (!response.ok) throw new Error('profile update failed');
       setProfileMessage('Saved. Your recommendations are updated for this session.');
     } catch {
@@ -198,6 +205,11 @@ export default function StudentDashboard({
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ opportunityId, ...nextRecord }),
       });
+      const payload = (await response.json().catch(() => null)) as { redirectTo?: unknown } | null;
+      if (response.status === 401 && typeof payload?.redirectTo === 'string') {
+        window.location.assign(payload.redirectTo);
+        return;
+      }
       if (!response.ok) throw new Error('tracker update failed');
     } catch {
       setTracker(previous);

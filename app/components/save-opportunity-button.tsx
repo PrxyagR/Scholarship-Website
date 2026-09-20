@@ -19,7 +19,7 @@ export function SaveOpportunityButton({
   const router = useRouter();
   const [saved, setSaved] = useState(initialSaved);
   const [pending, setPending] = useState(false);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState('');
   const signInUrl = `/sign-in?message=save-required&next=${encodeURIComponent(returnTo)}`;
 
   const handleSave = async () => {
@@ -31,7 +31,7 @@ export function SaveOpportunityButton({
     }
 
     setPending(true);
-    setError(false);
+    setError('');
 
     try {
       const response = await fetch('/api/saved', {
@@ -40,6 +40,7 @@ export function SaveOpportunityButton({
         body: JSON.stringify({ opportunityId, returnTo }),
       });
       const payload = (await response.json().catch(() => null)) as {
+        error?: unknown;
         redirectTo?: unknown;
         saved?: unknown;
       } | null;
@@ -50,7 +51,11 @@ export function SaveOpportunityButton({
       }
 
       if (!response.ok) {
-        setError(true);
+        setError(
+          payload?.error === 'setup'
+            ? 'Saving is temporarily unavailable.'
+            : 'That change did not save. Try again.',
+        );
         return;
       }
 
@@ -61,7 +66,7 @@ export function SaveOpportunityButton({
         router.refresh();
       }
     } catch {
-      setError(true);
+      setError('That change did not save. Try again.');
     } finally {
       setPending(false);
     }
@@ -84,7 +89,7 @@ export function SaveOpportunityButton({
       </button>
       {error ? (
         <span className="save-opportunity-error" role="alert">
-          Try again
+          {error}
         </span>
       ) : null}
     </span>

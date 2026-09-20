@@ -88,7 +88,11 @@ export default function RoleSubmissionForm() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
       });
-      const result = (await response.json().catch(() => ({}))) as { error?: unknown };
+      const result = (await response.json().catch(() => ({}))) as { error?: unknown; redirectTo?: unknown };
+      if (response.status === 401 && typeof result.redirectTo === 'string') {
+        window.location.assign(result.redirectTo);
+        return;
+      }
       if (!response.ok) throw new Error(typeof result.error === 'string' ? result.error : 'submit_failed');
       setStatus('success');
       event.currentTarget.reset();

@@ -118,6 +118,7 @@ export function FilterPanel({
   onReset,
   onClose,
   mobile = false,
+  hasExternalFilters = false,
   totalCount,
 }: {
   selectedTypes: OpportunityType[];
@@ -141,6 +142,7 @@ export function FilterPanel({
   onReset: () => void;
   onClose?: () => void;
   mobile?: boolean;
+  hasExternalFilters?: boolean;
   totalCount?: number;
 }) {
   const toggle = <T,>(value: T, setter: Dispatch<SetStateAction<T[]>>) => {
@@ -158,7 +160,8 @@ export function FilterPanel({
     selectedCosts.length > 0 ||
     selectedFormats.length > 0 ||
     selectedStatuses.length > 0 ||
-    selectedOrganizerCountries.length > 0;
+    selectedOrganizerCountries.length > 0 ||
+    Boolean(hasExternalFilters);
 
   return (
     <div className={`filters-panel-content ${mobile ? 'is-mobile' : ''}`}>

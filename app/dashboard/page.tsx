@@ -42,7 +42,7 @@ export default async function DashboardPage() {
     .filter((opportunity): opportunity is (typeof catalog)[number] => Boolean(opportunity));
   const profile = getStudentProfile(user);
   const tracker = getApplicationTracker(user);
-  const recommendations = getRecommendedOpportunities(profile, savedIds);
+  const recommendations = getRecommendedOpportunities(profile, savedIds, catalog);
 
   return (
     <>
@@ -54,6 +54,7 @@ export default async function DashboardPage() {
         savedOpportunities={savedOpportunities}
         initialTracker={tracker}
         initialRecommendations={recommendations}
+        catalog={catalog}
       />
       <SiteFooter />
     </>

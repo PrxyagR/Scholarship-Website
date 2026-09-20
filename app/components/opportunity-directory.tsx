@@ -117,24 +117,32 @@ export default function OpportunityDirectory({
     };
   }, [closeMobileFilters, mobileFiltersOpen]);
 
-  const cities = useMemo(
+  const citySuggestions = useMemo(
     () => Array.from(new Set(catalog.map((opportunity) => opportunity.city))).sort(),
     [catalog],
   );
 
   const filteredOpportunities = useMemo(() => {
-    const normalizedQuery = query.trim().toLowerCase();
+    const queryTerms = query.trim().toLowerCase().split(/\s+/).filter(Boolean);
     const matches = catalog.filter((opportunity) => {
       const searchable = [
         opportunity.title,
         opportunity.provider,
         opportunity.summary,
         opportunity.eligibility,
+        opportunity.type,
+        opportunity.city,
+        opportunity.province,
+        opportunity.locationLabel,
+        getOpportunityStatus(opportunity),
+        getOpportunityCost(opportunity),
+        getOpportunityFormat(opportunity),
+        getOrganizerCountry(opportunity),
         ...opportunity.studyFocus,
       ]
         .join(' ')
         .toLowerCase();
-      const searchMatches = !normalizedQuery || searchable.includes(normalizedQuery);
+      const searchMatches = !queryTerms.length || queryTerms.every((term) => searchable.includes(term));
       const typeMatches = !selectedTypes.length || selectedTypes.includes(opportunity.type);
       const provinceMatches =
         !selectedProvinces.length ||
@@ -148,11 +156,13 @@ export default function OpportunityDirectory({
         selectedFocuses.some((focus) => opportunity.studyFocus.includes(focus));
       const locationMatches =
         !selectedLocations.length || selectedLocations.includes(opportunity.locationMode);
+      const normalizedCity = selectedCity.trim().toLowerCase();
       const cityMatches =
-        !selectedCity ||
-        opportunity.city === selectedCity ||
-        opportunity.locationMode === 'Online' ||
-        opportunity.province === 'National';
+        !normalizedCity ||
+        [opportunity.city, opportunity.locationLabel, opportunity.province]
+          .join(' ')
+          .toLowerCase()
+          .includes(normalizedCity);
       const costMatches =
         !selectedCosts.length || selectedCosts.includes(getOpportunityCost(opportunity));
       const formatMatches =
@@ -249,6 +259,7 @@ export default function OpportunityDirectory({
     selectedOrganizerCountries,
     setSelectedOrganizerCountries,
     onReset: resetFilters,
+    hasExternalFilters: Boolean(query || selectedCity),
     totalCount: filteredOpportunities.length,
   } satisfies {
     selectedTypes: OpportunityType[];
@@ -270,6 +281,7 @@ export default function OpportunityDirectory({
     selectedOrganizerCountries: OrganizerCountry[];
     setSelectedOrganizerCountries: Dispatch<SetStateAction<OrganizerCountry[]>>;
     onReset: () => void;
+    hasExternalFilters?: boolean;
     totalCount?: number;
   };
 
@@ -506,19 +518,20 @@ export default function OpportunityDirectory({
               <div className="toolbar-selectors">
                 <label className="select-control-wrap">
                   <span>City:</span>
-                  <select
-                    className="custom-select"
+                  <input
+                    className="custom-select city-filter-input"
+                    type="search"
                     value={selectedCity}
                     onChange={(e) => setSelectedCity(e.target.value)}
-                    aria-label="Filter by City"
-                  >
-                    <option value="">All cities</option>
-                    {cities.map((c) => (
-                      <option key={c} value={c}>
-                        {c}
-                      </option>
+                    placeholder="e.g. Toronto or online"
+                    list="opportunity-city-suggestions"
+                    aria-label="Filter by city or area"
+                  />
+                  <datalist id="opportunity-city-suggestions">
+                    {citySuggestions.map((city) => (
+                      <option key={city} value={city} />
                     ))}
-                  </select>
+                  </datalist>
                 </label>
 
                 <label className="select-control-wrap">
@@ -535,19 +548,23 @@ export default function OpportunityDirectory({
                   </select>
                 </label>
 
-                <div className="directory-view-toggle" role="group" aria-label="Choose catalog view">
+                <div className="directory-view-toggle" role="tablist" aria-label="Choose catalog view">
                   <button
                     type="button"
+                    role="tab"
                     className={viewMode === 'list' ? 'is-active' : ''}
-                    aria-pressed={viewMode === 'list'}
+                    aria-selected={viewMode === 'list'}
+                    tabIndex={viewMode === 'list' ? 0 : -1}
                     onClick={() => setViewMode('list')}
                   >
                     List
                   </button>
                   <button
                     type="button"
+                    role="tab"
                     className={viewMode === 'map' ? 'is-active' : ''}
-                    aria-pressed={viewMode === 'map'}
+                    aria-selected={viewMode === 'map'}
+                    tabIndex={viewMode === 'map' ? 0 : -1}
                     onClick={() => setViewMode('map')}
                   >
                     Map
@@ -557,7 +574,7 @@ export default function OpportunityDirectory({
             </div>
 
             {/* Cards Grid or Empty State */}
-            {viewMode === 'map' ? (
+            {viewMode === 'map' && filteredOpportunities.length > 0 ? (
               <OpportunityMap opportunities={filteredOpportunities} />
             ) : filteredOpportunities.length > 0 ? (
               <div className="opportunities-grid">

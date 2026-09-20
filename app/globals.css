@@ -1173,6 +1173,13 @@ h1 em, h2 em, h3 em {
   border-color: var(--forest);
 }
 
+.city-filter-input {
+  min-width: 170px;
+  padding-right: 10px;
+  background-image: none;
+  cursor: text;
+}
+
 /* Active Filters Pill Strip */
 .active-filters-strip {
   display: flex;
@@ -3466,6 +3473,7 @@ h1 em, h2 em, h3 em {
 }
 
 .opportunity-map-shell {
+  position: relative;
   overflow: hidden;
   border: 1px solid var(--line);
   border-radius: var(--radius-md);
@@ -3491,6 +3499,28 @@ h1 em, h2 em, h3 em {
 .opportunity-map-note span:first-child {
   color: var(--forest);
   font-weight: 750;
+}
+
+.opportunity-map-empty {
+  position: absolute;
+  inset: 50% auto auto 50%;
+  z-index: 1;
+  display: grid;
+  gap: 5px;
+  width: min(330px, calc(100% - 32px));
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--surface) 94%, transparent);
+  box-shadow: var(--shadow-sm);
+  color: var(--ink);
+  text-align: center;
+  transform: translate(-50%, -50%);
+}
+
+.opportunity-map-empty span {
+  color: var(--ink-muted);
+  font-size: 13px;
 }
 
 .opportunity-map-popup {

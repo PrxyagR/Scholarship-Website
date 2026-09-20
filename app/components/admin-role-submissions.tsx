@@ -21,6 +21,11 @@ export default function AdminRoleSubmissions({ initialSubmissions }: { initialSu
           status,
         }),
       });
+      const payload = (await response.json().catch(() => null)) as { redirectTo?: unknown } | null;
+      if (response.status === 401 && typeof payload?.redirectTo === 'string') {
+        window.location.assign(payload.redirectTo);
+        return;
+      }
       if (!response.ok) throw new Error('review failed');
       setSubmissions((current) => current.filter((item) => item.id !== submission.id));
       setMessage(status === 'approved' ? 'Role approved and added to the public catalog.' : 'Role rejected and removed from the queue.');

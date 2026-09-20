@@ -61,9 +61,15 @@ export function OpportunityMap({ opportunities }: { opportunities: Opportunity[]
   return (
     <div className="opportunity-map-shell">
       <div ref={mapContainerRef} className="opportunity-map" aria-label="Opportunity locations map" />
+      {!mappableOpportunities.length ? (
+        <div className="opportunity-map-empty" role="status">
+          <strong>No mapped locations in this selection</strong>
+          <span>Try the list view for online and multi-location opportunities.</span>
+        </div>
+      ) : null}
       <div className="opportunity-map-note">
-        <span>{mappableOpportunities.length} mapped listings</span>
-        <span>Remote listings remain in the list view.</span>
+        <span>{mappableOpportunities.length} of {opportunities.length} listings mapped</span>
+        <span>Online and multi-location listings remain in the list view.</span>
       </div>
     </div>
   );

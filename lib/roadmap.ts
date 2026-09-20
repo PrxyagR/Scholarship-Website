@@ -60,6 +60,28 @@ function isFocus(value: unknown): value is StudyFocus {
   return typeof value === 'string' && supportedStudyFocuses.includes(value as StudyFocus);
 }
 
+function scoreRoadmapOpportunity(opportunity: Opportunity, answers: RoadmapAnswers) {
+  let score = 0;
+  const type = opportunity.type;
+  const format = opportunity.format ?? (opportunity.locationMode === 'Online' ? 'Online' : 'In person');
+
+  if (answers.focuses.length) {
+    if (answers.focuses.some((focus) => opportunity.studyFocus.includes(focus))) score += 6;
+    if (opportunity.studyFocus.includes('Any field')) score += 2;
+  }
+
+  if (answers.format === 'mostly online' && format === 'Online') score += 3;
+  if (answers.format === 'mostly in person' && format === 'In person') score += 3;
+  if (answers.format === 'a mix of both' && format === 'Hybrid') score += 3;
+
+  if (answers.goal === 'compete' && type === 'Competition') score += 6;
+  if (answers.goal === 'build' && ['Program', 'Competition', 'Internship'].includes(type)) score += 3;
+  if (answers.goal === 'serve' && ['Youth role', 'Program', 'Internship'].includes(type)) score += 6;
+  if (answers.goal === 'explore' && ['Program', 'Internship'].includes(type)) score += 3;
+
+  return score;
+}
+
 export function parseRoadmapAnswers(value: unknown): RoadmapAnswers | null {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
   const raw = value as Record<string, unknown>;
@@ -83,7 +105,8 @@ export function buildRoadmapSteps(
 ): RoadmapStep[] {
   const focusLabel = answers.focuses.length ? answers.focuses.join(', ') : profile.focuses.join(', ');
   const firstFocus = focusLabel || 'a field you want to explore';
-  const firstRecommendation = recommendations[0];
+  const firstRecommendation = [...recommendations]
+    .sort((a, b) => scoreRoadmapOpportunity(b, answers) - scoreRoadmapOpportunity(a, answers))[0];
   const goalBody =
     answers.goal === 'build'
       ? `Choose one ${firstFocus} project you can finish in a few weeks. Start with a small output: a prototype, article, experiment, design, or community plan.`

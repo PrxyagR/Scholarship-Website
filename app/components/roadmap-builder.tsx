@@ -51,6 +51,11 @@ export default function RoadmapBuilder({
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ answers }),
       });
+      const payload = (await response.json().catch(() => null)) as { redirectTo?: unknown } | null;
+      if (response.status === 401 && typeof payload?.redirectTo === 'string') {
+        window.location.assign(payload.redirectTo);
+        return;
+      }
       if (!response.ok) throw new Error('roadmap update failed');
       setSteps(buildRoadmapSteps(answers, profile, savedCount, recommendations));
       setMessage('Saved. Your four-step plan is updated.');

@@ -68,6 +68,7 @@ export async function POST(request: NextRequest) {
 
   const { error } = await adminClient.auth.admin.updateUserById(user.id, {
     app_metadata: {
+      ...user.app_metadata,
       [ROLE_SUBMISSIONS_KEY]: [...currentSubmissions, submission],
     },
   });

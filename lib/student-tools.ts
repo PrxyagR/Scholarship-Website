@@ -114,10 +114,14 @@ export function isKnownStudentProvince(value: unknown): value is string {
   return typeof value === 'string' && studentProvinceOptions.includes(value);
 }
 
-export function getRecommendedOpportunities(profile: StudentProfile, savedIds: string[] = []) {
+export function getRecommendedOpportunities(
+  profile: StudentProfile,
+  savedIds: string[] = [],
+  catalog: Opportunity[] = opportunities,
+) {
   const saved = new Set(savedIds);
 
-  return opportunities
+  return catalog
     .filter((opportunity) => !saved.has(opportunity.id))
     .map((opportunity) => ({ opportunity, score: scoreOpportunity(opportunity, profile) }))
     .sort((a, b) => {

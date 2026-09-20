@@ -243,7 +243,10 @@ export async function updateRoleSubmissionStatus(
       : submission,
   );
   const update = await adminClient.auth.admin.updateUserById(submitterUserId, {
-    user_metadata: { [ROLE_SUBMISSIONS_KEY]: updated },
+    app_metadata: {
+      ...data.user.app_metadata,
+      [ROLE_SUBMISSIONS_KEY]: updated,
+    },
   });
   if (update.error) return { ok: false as const, error: 'update_failed' };
   return { ok: true as const };
