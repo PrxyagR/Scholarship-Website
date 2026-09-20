@@ -404,6 +404,10 @@ h1 em, h2 em, h3 em {
   animation: slideDown 180ms ease-out;
 }
 
+.mobile-bottom-toolbar {
+  display: none;
+}
+
 .mobile-menu-links {
   display: flex;
   flex-direction: column;
@@ -2107,6 +2111,71 @@ h1 em, h2 em, h3 em {
 }
 
 @media (max-width: 768px) {
+  body {
+    padding-bottom: calc(90px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .site-header {
+    min-height: 58px;
+  }
+
+  .mobile-menu-backdrop,
+  .mobile-menu-drawer {
+    top: 58px;
+  }
+
+  .mobile-menu-drawer {
+    max-height: calc(100vh - 58px);
+    padding: 12px 16px 20px;
+  }
+
+  .mobile-bottom-toolbar {
+    position: fixed;
+    right: 12px;
+    bottom: max(10px, env(safe-area-inset-bottom, 10px));
+    left: 12px;
+    z-index: 40;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 4px;
+    padding: 7px;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.96);
+    box-shadow: 0 10px 28px rgba(17, 35, 37, 0.14);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  .mobile-bottom-toolbar-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+    min-height: 48px;
+    padding: 5px 3px;
+    border-radius: 11px;
+    color: var(--ink-muted);
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1.1;
+    text-align: center;
+  }
+
+  .mobile-bottom-toolbar-link:hover,
+  .mobile-bottom-toolbar-link:focus-visible {
+    background: var(--forest-light);
+    color: var(--forest);
+  }
+
+  .mobile-bottom-toolbar-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+  }
+
   .feature-grid,
   .steps-list-grid,
   .principles-2col-grid,
@@ -2154,6 +2223,86 @@ h1 em, h2 em, h3 em {
     min-height: 44px;
     font-size: 14px;
   }
+
+  .home-hero {
+    padding-top: 32px;
+    padding-bottom: 30px;
+  }
+
+  .hero-grid {
+    gap: 26px;
+  }
+
+  .hero-description {
+    margin-top: 12px;
+    font-size: 15px;
+    line-height: 1.55;
+  }
+
+  .hero-actions {
+    gap: 10px;
+    margin-top: 20px;
+  }
+
+  .hero-card-header {
+    padding: 13px 16px;
+  }
+
+  .hero-stat-item {
+    padding: 14px 10px;
+  }
+
+  .hero-card-footer {
+    padding: 12px 16px;
+  }
+
+  .section-wrapper,
+  .directory-body-wrapper,
+  .detail-page-container,
+  .editorial-content-section {
+    padding-top: 32px;
+    padding-bottom: 52px;
+  }
+
+  .section-header-row {
+    gap: 12px;
+    margin-bottom: 22px;
+  }
+
+  .page-header-banner,
+  .editorial-hero-banner {
+    padding-top: 32px;
+    padding-bottom: 30px;
+  }
+
+  .directory-layout-grid {
+    gap: 22px;
+  }
+
+  .detail-back-link {
+    margin-bottom: 16px;
+  }
+
+  .detail-lead-summary {
+    margin-top: 14px;
+    font-size: 15px;
+    line-height: 1.55;
+  }
+
+  .detail-meta-cards-row {
+    margin: 24px 0;
+    padding: 16px;
+  }
+
+  .detail-section-block {
+    margin-top: 24px;
+    padding-top: 20px;
+  }
+
+  .detail-apply-box {
+    margin-top: 26px;
+    padding: 18px;
+  }
 }
 
 /* 320px to 390px Screen Adjustments */
@@ -2167,7 +2316,7 @@ h1 em, h2 em, h3 em {
   }
 
   .home-hero {
-    padding: 36px 14px 32px;
+    padding: 28px 14px 24px;
   }
 
   .hero-stat-number {
@@ -2186,12 +2335,12 @@ h1 em, h2 em, h3 em {
   .directory-body-wrapper,
   .detail-page-container,
   .editorial-content-section {
-    padding: 40px 14px 48px;
+    padding: 30px 14px 42px;
   }
 
   .page-header-banner,
   .editorial-hero-banner {
-    padding: 36px 14px 32px;
+    padding: 30px 14px 26px;
   }
 
   .search-filter-bar {
@@ -2634,8 +2783,8 @@ h1 em, h2 em, h3 em {
 
 @media (max-width: 760px) {
   .auth-page {
-    padding-top: 56px;
-    padding-bottom: 72px;
+    padding-top: 40px;
+    padding-bottom: 64px;
   }
 
   .auth-shell {
@@ -2649,7 +2798,7 @@ h1 em, h2 em, h3 em {
   }
 
   .auth-card {
-    padding: 24px 20px;
+    padding: 22px 18px;
   }
 }
 
@@ -2672,7 +2821,7 @@ h1 em, h2 em, h3 em {
   .saved-page-header {
     align-items: flex-start;
     flex-direction: column;
-    padding: 48px 20px 38px;
+    padding: 36px 20px 28px;
   }
 
   .saved-page-count {
@@ -2680,7 +2829,7 @@ h1 em, h2 em, h3 em {
   }
 
   .saved-page-content {
-    padding: 38px 20px 72px;
+    padding: 28px 20px 58px;
   }
 
   .saved-page-section-heading {
@@ -3170,7 +3319,7 @@ h1 em, h2 em, h3 em {
   .dashboard-header {
     align-items: flex-start;
     flex-direction: column;
-    padding: 48px 20px 34px;
+    padding: 38px 20px 28px;
   }
 
   .dashboard-account-chip {
@@ -3179,11 +3328,11 @@ h1 em, h2 em, h3 em {
   }
 
   .dashboard-body {
-    padding: 22px 20px 70px;
+    padding: 18px 20px 62px;
   }
 
   .dashboard-panel {
-    padding: 22px 20px;
+    padding: 20px 18px;
   }
 
   .dashboard-panel-heading-wide,

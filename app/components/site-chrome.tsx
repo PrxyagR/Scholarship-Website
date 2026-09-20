@@ -21,6 +21,80 @@ function BrandMark() {
   );
 }
 
+type ToolbarIconName = 'home' | 'explore' | 'saved' | 'account';
+
+function ToolbarIcon({ name }: { name: ToolbarIconName }) {
+  const commonProps = {
+    className: 'mobile-bottom-toolbar-icon',
+    viewBox: '0 0 24 24',
+    fill: 'none',
+    stroke: 'currentColor',
+    strokeWidth: 1.8,
+    strokeLinecap: 'round' as const,
+    strokeLinejoin: 'round' as const,
+    'aria-hidden': true,
+  };
+
+  if (name === 'home') {
+    return (
+      <svg {...commonProps}>
+        <path d="m3 10 9-7 9 7" />
+        <path d="M5 9.5V21h14V9.5" />
+        <path d="M9 21v-6h6v6" />
+      </svg>
+    );
+  }
+
+  if (name === 'explore') {
+    return (
+      <svg {...commonProps}>
+        <circle cx="10.8" cy="10.8" r="6.3" />
+        <path d="m16 16 4.5 4.5" />
+        <path d="m8.8 12.8 1.5-3.2 3.2-1.5-1.5 3.2-3.2 1.5Z" />
+      </svg>
+    );
+  }
+
+  if (name === 'saved') {
+    return (
+      <svg {...commonProps}>
+        <path d="M20.8 8.7c0 5.2-8.8 10.6-8.8 10.6S3.2 13.9 3.2 8.7A4.7 4.7 0 0 1 12 6.2a4.7 4.7 0 0 1 8.8 2.5Z" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg {...commonProps}>
+      <circle cx="12" cy="8" r="3.2" />
+      <path d="M5.2 20a6.8 6.8 0 0 1 13.6 0" />
+    </svg>
+  );
+}
+
+export function MobileBottomToolbar({ isAuthenticated }: { isAuthenticated: boolean }) {
+  const links: Array<{ href: string; label: string; icon: ToolbarIconName }> = [
+    { href: '/', label: 'Home', icon: 'home' },
+    { href: '/opportunities', label: 'Explore', icon: 'explore' },
+    { href: '/saved', label: 'Saved', icon: 'saved' },
+    {
+      href: isAuthenticated ? '/account' : '/sign-in',
+      label: isAuthenticated ? 'Account' : 'Sign in',
+      icon: 'account',
+    },
+  ];
+
+  return (
+    <nav className="mobile-bottom-toolbar" aria-label="Mobile primary navigation">
+      {links.map((link) => (
+        <a key={link.href} href={link.href} className="mobile-bottom-toolbar-link">
+          <ToolbarIcon name={link.icon} />
+          <span>{link.label}</span>
+        </a>
+      ))}
+    </nav>
+  );
+}
+
 export async function SiteHeader() {
   const supabase = await createClient();
   const {
@@ -29,26 +103,29 @@ export async function SiteHeader() {
   const isAuthenticated = Boolean(user);
 
   return (
-    <header className="site-header">
-      <a className="brand" href="/" aria-label="MaplePath home">
-        <BrandMark />
-        <span>MaplePath</span>
-      </a>
-      <nav className="desktop-nav" aria-label="Primary navigation">
-        <a href="/opportunities">Explore catalog</a>
-        <a href="/dashboard">My dashboard</a>
-        <a href="/saved">Saved</a>
-        <a href="/how-it-works">How it works</a>
-        <a href="/about">About</a>
-      </nav>
-      <a className="header-auth-link" href={isAuthenticated ? '/account' : '/sign-in'}>
-        {isAuthenticated ? 'Account' : 'Sign in'}
-      </a>
-      <a className="header-button" href="/opportunities">
-        Browse catalog <span aria-hidden="true">↗</span>
-      </a>
-      <MobileMenu isAuthenticated={isAuthenticated} />
-    </header>
+    <>
+      <header className="site-header">
+        <a className="brand" href="/" aria-label="MaplePath home">
+          <BrandMark />
+          <span>MaplePath</span>
+        </a>
+        <nav className="desktop-nav" aria-label="Primary navigation">
+          <a href="/opportunities">Explore catalog</a>
+          <a href="/dashboard">My dashboard</a>
+          <a href="/saved">Saved</a>
+          <a href="/how-it-works">How it works</a>
+          <a href="/about">About</a>
+        </nav>
+        <a className="header-auth-link" href={isAuthenticated ? '/account' : '/sign-in'}>
+          {isAuthenticated ? 'Account' : 'Sign in'}
+        </a>
+        <a className="header-button" href="/opportunities">
+          Browse catalog <span aria-hidden="true">↗</span>
+        </a>
+        <MobileMenu isAuthenticated={isAuthenticated} />
+      </header>
+      <MobileBottomToolbar isAuthenticated={isAuthenticated} />
+    </>
   );
 }
 
