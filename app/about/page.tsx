@@ -106,9 +106,9 @@ export default function AboutPage() {
             </div>
 
             <div className="guide-inner-note">
-              <span>Weekly Updates</span>
+              <span>Catalog Updates</span>
               <strong>
-                Catalog last verified on {displayDate(catalogUpdatedAt)}.
+                Catalog updated on {displayDate(catalogUpdatedAt)}. Each listing shows its own verification date.
               </strong>
             </div>
           </div>

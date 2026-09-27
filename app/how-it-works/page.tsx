@@ -117,7 +117,7 @@ export default function HowItWorksPage() {
             <div className="guide-inner-note">
               <span>Catalog Status</span>
               <strong>
-                Last reviewed on {displayDate(catalogUpdatedAt)}. All links point to original sources.
+                Catalog updated {displayDate(catalogUpdatedAt)}. Each listing shows its own verification date, and links point to original sources.
               </strong>
             </div>
           </div>

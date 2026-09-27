@@ -216,7 +216,7 @@ export default async function Home() {
                 </div>
 
                 <div className="hero-card-footer">
-                  <span>Weekly review cycle</span>
+                  <span>Latest catalog update</span>
                   <strong>{displayDate(catalogUpdatedAt)}</strong>
                 </div>
               </div>
@@ -652,12 +652,12 @@ export default async function Home() {
           </div>
 
           <div className="guide-inner-note">
-            <span>Weekly Audit Cycle</span>
+            <span>Weekly Review Cycle</span>
             <strong>
-              “Every listing is checked for active official links, grade eligibility, and accurate deadline indicators.”
+              “We add and refresh opportunities using official sources. Check each listing’s verification date and eligibility notes before applying.”
             </strong>
             <p className="mt-2 text-xs text-[var(--ink-muted)]">
-              Last catalog audit: {displayDate(catalogUpdatedAt)}
+              Latest catalog update: {displayDate(catalogUpdatedAt)}
             </p>
           </div>
         </div>

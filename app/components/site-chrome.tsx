@@ -76,7 +76,7 @@ export function SiteFooter() {
       <div className="footer-bottom-row">
         <span className="flex items-center gap-1.5">
           <MapleLeafIcon className="h-3.5 w-3.5 text-[var(--maple-border)] inline shrink-0" />
-          <span>Catalog verified {displayDate(catalogUpdatedAt)} · Hand-reviewed weekly</span>
+          <span>Catalog updated {displayDate(catalogUpdatedAt)} · Hand-reviewed weekly</span>
         </span>
         <div className="footer-links">
           <a href="/opportunities">Directory</a>
