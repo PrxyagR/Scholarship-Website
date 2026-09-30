@@ -14,7 +14,7 @@ function BrandMark() {
   return (
     <img
       className="brand-mark transition-transform duration-200 hover:scale-105"
-      src="/maplepath-logo.png"
+      src="/favicon.png"
       width={32}
       height={32}
       alt="MaplePath logo"

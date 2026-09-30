@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 import { OpportunityCard } from '../components/opportunity-card';
 import { Eyebrow, SiteFooter, SiteHeader } from '../components/site-chrome';
 import { MapleWatermark, MapleTreeEmblem } from '../components/brand-motif';
@@ -9,14 +10,10 @@ import { getPublishedRoleOpportunities } from '@/lib/role-submissions';
 export const dynamic = 'force-dynamic';
 
 export default async function SavedOpportunitiesPage() {
-  const { user, savedIds: userSavedIds } = await getSavedOpportunityState();
-  const isGuest = !user;
+  const { user, savedIds } = await getSavedOpportunityState();
+  if (!user) redirect('/sign-in?message=saved-required&next=%2Fsaved');
 
   const catalog = [...opportunities, ...(await getPublishedRoleOpportunities())];
-
-  const savedIds = isGuest && userSavedIds.length === 0
-    ? ['loran-scholarship', 'canadian-computing-competition', 'shad-canada']
-    : userSavedIds;
 
   const savedOpportunities = savedIds
     .map((savedId) => catalog.find((opportunity) => opportunity.id === savedId))
@@ -25,16 +22,6 @@ export default async function SavedOpportunitiesPage() {
   return (
     <>
       <SiteHeader />
-      {isGuest && (
-        <div className="bg-[var(--surface-sunken)] border-b border-[var(--border-subtle)] px-4 py-2.5 text-center text-xs font-medium text-[var(--ink-secondary)]">
-          <span className="font-semibold text-[var(--spruce-primary)]">🍁 Guest Preview:</span>{' '}
-          Showing a sample shortlist of saved opportunities.{' '}
-          <a href="/sign-in" className="font-semibold text-[var(--maple-primary)] underline hover:text-[var(--maple-deep)]">
-            Sign in
-          </a>{' '}
-          to sync bookmarks to your personal account.
-        </div>
-      )}
       <main className="saved-page-wrapper">
         <section className="saved-page-header relative overflow-hidden">
           <MapleWatermark className="right-0 top-0 w-80 h-full text-[var(--maple-primary)]" opacity={0.06} />

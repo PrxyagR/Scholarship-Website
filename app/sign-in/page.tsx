@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { signIn, signInWithGoogle } from '../auth/actions';
-import { AuthError, AuthField, AuthShell } from '../components/auth-shell';
+import { AuthError, AuthField, AuthNotice, AuthShell } from '../components/auth-shell';
 import { getSafeNextPath } from '@/lib/supabase/redirects';
 import { createClient } from '@/lib/supabase/server';
 
@@ -17,12 +17,6 @@ function errorMessage(error: string | undefined) {
       return 'That email and password combination did not work. If you just signed up, check your inbox for the confirmation email.';
     case 'confirm':
       return 'This confirmation link is invalid or expired. Request a new password or sign-up email and try again.';
-    case 'save-required':
-      return 'Sign in or create a free account to save opportunities. We’ll bring you back after you sign in.';
-    case 'saved-required':
-      return 'Sign in to view the opportunities you have saved.';
-    case 'dashboard-required':
-      return 'Create a free account or sign in to use your private student dashboard, deadline calendar, and application tracker.';
     case 'consent':
       return 'Please accept the privacy notice to continue with Google.';
     case 'google':
@@ -34,10 +28,32 @@ function errorMessage(error: string | undefined) {
   }
 }
 
+function signInPrompt(message: string | undefined) {
+  switch (message) {
+    case 'save-required':
+      return 'Create a free account or sign in to keep your shortlist saved to your profile and available when you return.';
+    case 'saved-required':
+      return 'Your saved list is personal to you. Sign in to view it and keep changes synced to your account.';
+    case 'dashboard-required':
+      return 'Sign in to keep your application progress and private notes in your account, and to export saved deadlines to your calendar.';
+    case 'roadmap-required':
+      return 'Sign in to save a roadmap tailored to your grade and interests, then pick up where you left off later.';
+    case 'submit-role-required':
+      return 'Sign in to save your opportunity suggestion to your account and let MaplePath editors follow up if needed. Submissions stay private until reviewed.';
+    case 'account-required':
+      return 'Sign in to view your account details and access your MaplePath account tools.';
+    case 'owner-required':
+      return 'This area is reserved for authorized MaplePath project administrators. Sign in with the owner account to continue; a regular student account will not have access.';
+    default:
+      return null;
+  }
+}
+
 export default async function SignInPage({ searchParams }: { searchParams: SearchParams }) {
   const query = await searchParams;
   const next = getSafeNextPath(firstValue(query.next), '/account');
-  const message = errorMessage(firstValue(query.error) ?? firstValue(query.message));
+  const prompt = signInPrompt(firstValue(query.message));
+  const message = errorMessage(firstValue(query.error));
   const supabase = await createClient();
   const {
     data: { user },
@@ -54,6 +70,7 @@ export default async function SignInPage({ searchParams }: { searchParams: Searc
       title="Sign in to MaplePath"
       description="Keep your directory experience ready for the next scholarship, competition, or internship worth pursuing."
     >
+      {prompt ? <AuthNotice>{prompt}</AuthNotice> : null}
       {message ? <AuthError>{message}</AuthError> : null}
       <form className="auth-form" action={googleAction}>
         <label className="auth-checkbox">

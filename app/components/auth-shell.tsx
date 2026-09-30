@@ -39,6 +39,14 @@ export function AuthError({ children }: { children: React.ReactNode }) {
   );
 }
 
+export function AuthNotice({ children }: { children: React.ReactNode }) {
+  return (
+    <p className="auth-message auth-notice" role="status">
+      {children}
+    </p>
+  );
+}
+
 export function AuthSuccess({ children }: { children: React.ReactNode }) {
   return (
     <p className="auth-message auth-success" role="status">

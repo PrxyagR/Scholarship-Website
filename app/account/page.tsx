@@ -45,7 +45,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Sear
   } = await supabase.auth.getUser();
 
   if (!user) {
-    redirect('/sign-in?next=/account');
+    redirect('/sign-in?message=account-required&next=%2Faccount');
   }
 
   const isAdmin = isConfiguredAdmin(user);

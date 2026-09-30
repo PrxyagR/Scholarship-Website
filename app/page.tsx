@@ -1,8 +1,7 @@
-/* eslint-disable @next/next/no-html-link-for-pages */
+/* eslint-disable @next/next/no-html-link-for-pages, @next/next/no-img-element */
 import {
   catalogUpdatedAt,
   opportunities,
-  supportedProvinces,
   type Opportunity,
 } from './data/opportunities';
 import { typeMeta } from './components/opportunity-card';
@@ -20,24 +19,28 @@ const featuredOpportunities = opportunities
   .filter((opportunity) => opportunity.featured)
   .slice(0, 4);
 
-const provinceCodes: Record<string, string> = {
-  National: 'CA',
-  'Multiple provinces': 'Multi',
-  'Online / worldwide': 'Web',
-  Alberta: 'AB',
-  'British Columbia': 'BC',
-  Manitoba: 'MB',
-  'New Brunswick': 'NB',
-  'Newfoundland and Labrador': 'NL',
-  'Nova Scotia': 'NS',
-  Ontario: 'ON',
-  'Prince Edward Island': 'PE',
-  Quebec: 'QC',
-  Saskatchewan: 'SK',
-  'Northwest Territories': 'NT',
-  Nunavut: 'NU',
-  Yukon: 'YT',
-};
+// Public-domain provincial and territorial flag SVGs sourced from Wikimedia Commons.
+const provinceFlagAssets = [
+  { province: 'Alberta', src: '/province-flags/alberta.svg' },
+  { province: 'British Columbia', src: '/province-flags/british-columbia.svg' },
+  { province: 'Manitoba', src: '/province-flags/manitoba.svg' },
+  { province: 'New Brunswick', src: '/province-flags/new-brunswick.svg' },
+  { province: 'Newfoundland and Labrador', src: '/province-flags/newfoundland-and-labrador.svg' },
+  { province: 'Nova Scotia', src: '/province-flags/nova-scotia.svg' },
+  { province: 'Ontario', src: '/province-flags/ontario.svg' },
+  { province: 'Prince Edward Island', src: '/province-flags/prince-edward-island.svg' },
+  { province: 'Quebec', src: '/province-flags/quebec.svg' },
+  { province: 'Saskatchewan', src: '/province-flags/saskatchewan.svg' },
+  { province: 'Northwest Territories', src: '/province-flags/northwest-territories.svg' },
+  { province: 'Nunavut', src: '/province-flags/nunavut.svg' },
+  { province: 'Yukon', src: '/province-flags/yukon.svg' },
+] as const;
+
+const coverageFilters = [
+  { province: 'National', label: 'Canada-wide', icon: 'canada' },
+  { province: 'Multiple provinces', label: 'Multiple provinces', icon: 'regions' },
+  { province: 'Online / worldwide', label: 'Online & worldwide', icon: 'online' },
+] as const;
 
 function OpportunityTeaser({
   opportunity,
@@ -101,6 +104,8 @@ export default async function Home() {
   const spotlightOpportunity =
     opportunities.find((o) => o.id === 'loran-scholarship') ?? opportunities[0];
   const spotlightMeta = typeMeta[spotlightOpportunity.type];
+  const roadmapHref = user ? '/roadmap' : '/sign-in?message=roadmap-required&next=%2Froadmap';
+  const dashboardHref = user ? '/dashboard' : '/sign-in?message=dashboard-required&next=%2Fdashboard';
 
   return (
     <main>
@@ -138,7 +143,7 @@ export default async function Home() {
                 </span>
                 <span className="inline-flex items-center gap-1.5 font-medium">
                   <span className="h-1.5 w-1.5 rounded-full bg-[var(--forest)] flex-shrink-0" />
-                  No paywalls or logins required
+                  Browse listings without an account
                 </span>
                 <span className="inline-flex items-center gap-1.5 font-medium">
                   <span className="h-1.5 w-1.5 rounded-full bg-[var(--forest)] flex-shrink-0" />
@@ -191,7 +196,7 @@ export default async function Home() {
                         returnTo="/"
                       />
                       <a className="card-details-btn" href={`/opportunities/${spotlightOpportunity.id}`}>
-                        Preview <span aria-hidden="true">→</span>
+                        View listing <span aria-hidden="true">→</span>
                       </a>
                     </div>
                   </div>
@@ -401,11 +406,11 @@ export default async function Home() {
               </p>
             </div>
             <div className="mt-6 flex flex-wrap items-center gap-3">
-              <a href="/roadmap" className="primary-button">
-                Open Roadmap Builder ↗
+              <a href={roadmapHref} className="primary-button">
+                {user ? 'Open Roadmap Builder' : 'Sign in to build my roadmap'}
               </a>
-              <span className="text-xs text-[var(--ink-muted)]">
-                ✓ Interactive milestone preview
+              <span className="text-sm text-[var(--ink-muted)]">
+                Your personalized plan is saved to your account so you can return to it later.
               </span>
             </div>
           </div>
@@ -424,8 +429,8 @@ export default async function Home() {
               </p>
             </div>
             <div className="mt-6">
-              <a href="/dashboard" className="text-link">
-                Launch via Dashboard →
+              <a href={dashboardHref} className="text-link">
+                {user ? 'Open calendar tools' : 'Sign in to export saved deadlines'}
               </a>
             </div>
           </div>
@@ -467,11 +472,11 @@ export default async function Home() {
               </p>
             </div>
             <div className="mt-6 flex flex-wrap items-center gap-3">
-              <a href="/dashboard" className="secondary-button">
-                Open Student Dashboard ↗
+              <a href={dashboardHref} className="secondary-button">
+                {user ? 'Open Student Dashboard' : 'Sign in to use your dashboard'}
               </a>
-              <span className="text-xs text-[var(--ink-muted)]">
-                ✓ Full tracking & draft notes
+              <span className="text-sm text-[var(--ink-muted)]">
+                Your application progress and private notes stay in your account.
               </span>
             </div>
           </div>
@@ -493,29 +498,58 @@ export default async function Home() {
         </div>
 
         <div className="province-pill-grid">
-          {supportedProvinces.map((prov) => {
-            const count = opportunities.filter(
-              (o) =>
-                o.province === prov ||
-                (prov === 'National' && o.locationMode === 'Canada') ||
-                (prov === 'Online / worldwide' && o.locationMode === 'Online'),
-            ).length;
-
-            const code = provinceCodes[prov] || 'CA';
+          {provinceFlagAssets.map(({ province, src }) => {
+            const count = opportunities.filter((opportunity) => opportunity.province === province).length;
 
             return (
               <a
-                key={prov}
-                href={`/opportunities?province=${encodeURIComponent(prov)}`}
+                key={province}
+                href={`/opportunities?province=${encodeURIComponent(province)}`}
                 className="province-pill-item group"
               >
-                <span className="rounded bg-[var(--surface-sunken)] px-1.5 py-0.5 text-[10px] font-bold text-[var(--spruce-primary)] group-hover:bg-[var(--maple-primary)] group-hover:text-white transition-colors">
-                  {code}
+                <span className="province-flag-badge" aria-hidden="true">
+                  <img src={src} alt="" loading="lazy" />
                 </span>
-                <span>{prov}</span>
-                <span className="text-xs text-[var(--ink-muted)] font-medium">
-                  ({count})
+                <span className="province-pill-name">{province}</span>
+                <span className="province-pill-count">{count}</span>
+              </a>
+            );
+          })}
+        </div>
+
+        <div className="province-coverage-grid" aria-label="Other location filters">
+          {coverageFilters.map(({ province, label, icon }) => {
+            const count = opportunities.filter(
+              (opportunity) =>
+                opportunity.province === province ||
+                (province === 'National' && opportunity.locationMode === 'Canada') ||
+                (province === 'Online / worldwide' && opportunity.locationMode === 'Online'),
+            ).length;
+
+            return (
+              <a
+                key={province}
+                href={`/opportunities?province=${encodeURIComponent(province)}`}
+                className="province-coverage-pill"
+              >
+                <span className="province-coverage-icon" aria-hidden="true">
+                  {icon === 'canada' ? (
+                    <MapleLeafIcon className="h-5 w-5" />
+                  ) : icon === 'regions' ? (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                      <circle cx="8" cy="8" r="4" />
+                      <circle cx="16" cy="8" r="4" />
+                      <circle cx="12" cy="16" r="4" />
+                    </svg>
+                  ) : (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
+                      <circle cx="12" cy="12" r="9" />
+                      <path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18" />
+                    </svg>
+                  )}
                 </span>
+                <span>{label}</span>
+                <span className="province-coverage-count">{count}</span>
               </a>
             );
           })}

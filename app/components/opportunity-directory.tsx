@@ -49,6 +49,7 @@ export default function OpportunityDirectory({
   initialFocuses?: StudyFocus[];
 }) {
   const [query, setQuery] = useState('');
+  const [showScrollToTop, setShowScrollToTop] = useState(false);
   const [selectedTypes, setSelectedTypes] = useState<OpportunityType[]>(initialTypes);
   const [selectedProvinces, setSelectedProvinces] = useState<string[]>(initialProvinces);
   const [selectedGrades, setSelectedGrades] = useState<number[]>(initialGrades);
@@ -65,6 +66,17 @@ export default function OpportunityDirectory({
   const mobileFilterTriggerRef = useRef<HTMLButtonElement>(null);
   const mobileFilterSheetRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const updateScrollButton = () => {
+      const shouldShow = window.scrollY > 520;
+      setShowScrollToTop((current) => current === shouldShow ? current : shouldShow);
+    };
+
+    updateScrollButton();
+    window.addEventListener('scroll', updateScrollButton, { passive: true });
+    return () => window.removeEventListener('scroll', updateScrollButton);
+  }, []);
 
   // Focus search input with '/' or 'Cmd+K' / 'Ctrl+K'
   useEffect(() => {
@@ -663,6 +675,26 @@ export default function OpportunityDirectory({
             </div>
           </div>
         </div>
+      )}
+
+      {showScrollToTop && (
+        <button
+          className="directory-scroll-top"
+          type="button"
+          aria-label="Scroll to top"
+          title="Scroll to top"
+          onClick={() => {
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+              window.scrollTo(0, 0);
+            } else {
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+          }}
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" aria-hidden="true">
+            <path d="m6 14 6-6 6 6" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </button>
       )}
     </main>
   );

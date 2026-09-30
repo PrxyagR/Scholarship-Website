@@ -25,7 +25,7 @@ export default async function SignupMetricsPage() {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    redirect('/sign-in?next=/admin/signups');
+    redirect('/sign-in?message=owner-required&next=%2Fadmin%2Fsignups');
   }
 
   if (!isConfiguredAdmin(user)) {

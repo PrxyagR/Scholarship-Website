@@ -3536,6 +3536,12 @@ h1 em, h2 em, h3 em {
   color: var(--maple-hover);
 }
 
+.auth-notice {
+  border: 1px solid var(--forest-border);
+  background: var(--forest-light);
+  color: var(--forest);
+}
+
 .auth-success {
   border: 1px solid var(--forest-border);
   background: var(--forest-light);
@@ -4481,6 +4487,53 @@ h1 em, h2 em, h3 em {
   }
 }
 
+.directory-scroll-top {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .directory-scroll-top {
+    position: fixed;
+    right: max(16px, env(safe-area-inset-right, 0px));
+    bottom: calc(5.35rem + env(safe-area-inset-bottom, 0px));
+    z-index: 40;
+    display: grid;
+    width: 46px;
+    height: 46px;
+    place-items: center;
+    border: 1px solid rgb(255 255 255 / 55%);
+    border-radius: 50%;
+    background: var(--forest);
+    color: #fff;
+    box-shadow: 0 6px 18px rgb(7 31 25 / 24%);
+    cursor: pointer;
+    transition: background-color 160ms ease, transform 160ms ease, box-shadow 160ms ease;
+  }
+
+  .directory-scroll-top svg {
+    width: 21px;
+    height: 21px;
+  }
+
+  .directory-scroll-top:hover {
+    background: var(--maple-primary);
+    box-shadow: 0 8px 22px rgb(7 31 25 / 28%);
+    transform: translateY(-2px);
+  }
+
+  .directory-scroll-top:focus-visible {
+    outline: 3px solid var(--maple-glow);
+    outline-offset: 3px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .directory-scroll-top {
+    scroll-behavior: auto;
+    transition: none;
+  }
+}
+
 /* Interactive Maple Leaf Canvas Container */
 .maple-hero-container {
   position: relative;
@@ -4675,21 +4728,23 @@ h1 em, h2 em, h3 em {
 
 /* Province & Territory Quick Grid */
 .province-pill-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 9px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(178px, 1fr));
+  gap: 12px;
   margin-top: 24px;
 }
 
 .province-pill-item {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 10px;
+  min-width: 0;
+  min-height: 58px;
   background: var(--surface-elevated);
   border: 1px solid var(--border-subtle);
-  padding: 8px 14px;
-  border-radius: var(--radius-full);
-  font-size: 13.5px;
+  padding: 9px 12px;
+  border-radius: var(--radius-md);
+  font-size: 13px;
   font-weight: 600;
   color: var(--ink-strong);
   text-decoration: none;
@@ -4703,6 +4758,125 @@ h1 em, h2 em, h3 em {
   color: var(--maple-primary);
   transform: translateY(-1px);
   box-shadow: var(--shadow-sm);
+}
+
+.province-flag-badge {
+  display: grid;
+  place-items: center;
+  flex: 0 0 40px;
+  width: 40px;
+  height: 40px;
+  overflow: hidden;
+  border: 1px solid var(--border-subtle);
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgb(18 43 37 / 12%);
+}
+
+.province-flag-badge img {
+  display: block;
+  width: 31px;
+  max-height: 25px;
+  object-fit: contain;
+}
+
+.province-pill-name {
+  min-width: 0;
+  flex: 1;
+  line-height: 1.25;
+}
+
+.province-pill-count,
+.province-coverage-count {
+  flex: none;
+  color: var(--ink-muted);
+  font-size: 12px;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+
+.province-coverage-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.province-coverage-pill {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 13px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-full);
+  background: var(--surface-elevated);
+  color: var(--ink-strong);
+  font-size: 13px;
+  font-weight: 650;
+  text-decoration: none;
+  box-shadow: var(--shadow-xs);
+  transition: border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+}
+
+.province-coverage-pill:hover,
+.province-coverage-pill:focus-visible {
+  border-color: var(--maple-primary);
+  background: var(--surface-base);
+  color: var(--maple-primary);
+}
+
+.province-coverage-icon {
+  display: grid;
+  width: 26px;
+  height: 26px;
+  place-items: center;
+  color: var(--spruce-primary);
+}
+
+.province-coverage-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+@media (max-width: 640px) {
+  .province-pill-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 9px;
+  }
+
+  .province-pill-item {
+    gap: 8px;
+    min-height: 56px;
+    padding: 8px;
+    font-size: 12.5px;
+  }
+
+  .province-flag-badge {
+    flex-basis: 36px;
+    width: 36px;
+    height: 36px;
+  }
+
+  .province-flag-badge img {
+    width: 28px;
+    max-height: 22px;
+  }
+
+  .province-coverage-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .province-coverage-pill {
+    min-height: 48px;
+  }
+}
+
+@media (max-width: 360px) {
+  .province-pill-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* =========================================================

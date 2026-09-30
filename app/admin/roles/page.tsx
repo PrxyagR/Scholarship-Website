@@ -24,7 +24,7 @@ export default async function AdminRolesPage() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) redirect('/sign-in?next=/admin/roles');
+  if (!user) redirect('/sign-in?message=owner-required&next=%2Fadmin%2Froles');
   if (!isConfiguredAdmin(user)) notFound();
 
   const submissions = await listAdminRoleSubmissions('pending');
