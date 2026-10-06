@@ -1573,6 +1573,12 @@ h1 em, h2 em, h3 em {
 .desktop-filters-sidebar {
   position: sticky;
   top: 84px;
+  max-height: calc(100vh - 104px);
+  max-height: calc(100dvh - 104px);
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  scrollbar-width: thin;
+  align-self: start;
   border: 1px solid var(--line);
   border-radius: var(--radius-md);
   background: var(--surface);
